@@ -567,27 +567,35 @@ print(fruits[0])  # apple</pre>
       </div>
 
       <!-- Right Column (Learning Summary & Active Training Quiz) - col-span-7 -->
-      <div class="md:col-span-7 space-y-5 text-left flex flex-col justify-between">
+      <div class="md:col-span-7 space-y-4 text-left flex flex-col justify-between">
         
         <!-- Learning Summary Block -->
-        <div class="bg-slate-950/40 border border-slate-800 rounded-2xl p-5 space-y-3 relative">
+        <div class="bg-slate-950/40 border border-slate-800 rounded-2xl p-5 space-y-4 relative">
           <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
             <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
-            <span>코드 핵심 요약</span>
+            <span id="modal-learn-title">직전 완료 코드 & 핵심 요약</span>
           </h4>
           
-          <div class="space-y-3 text-xs md:text-sm">
-            <div class="space-y-0.5">
-              <span class="text-[10px] text-slate-500 font-semibold">💡 코드 설명</span>
-              <p id="modal-learn-desc" class="text-slate-300 leading-relaxed font-medium">소수(Prime Number)를 판별하는 함수형 알고리즘 코드입니다.</p>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+            <!-- Left Side: Code Preview (col-span-6) -->
+            <div class="lg:col-span-6 space-y-2">
+              <span class="text-[10px] text-slate-500 font-semibold block">💻 완료 소스코드</span>
+              <pre id="modal-code-preview" class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-[11px] text-slate-300 font-mono overflow-x-auto whitespace-pre leading-normal select-text" style="max-height: 180px;"></pre>
             </div>
-            <div class="space-y-0.5">
-              <span class="text-[10px] text-slate-500 font-semibold">❓ 왜 쓰나요?</span>
-              <p id="modal-learn-why" class="text-slate-300 leading-relaxed">특정 수가 1과 자기 자신 이외에 다른 나누어떨어지는 약수가 있는지 컴퓨터로 신속히 판별하기 위해 사용합니다.</p>
-            </div>
-            <div class="space-y-0.5">
-              <span class="text-[10px] text-slate-500 font-semibold">📅 언제 쓰나요?</span>
-              <p id="modal-learn-when" class="text-slate-300 leading-relaxed">알고리즘 문제 풀이, 암호학(RSA 암호화 키 생성), 또는 데이터 무결성 검증 루틴 등에서 자주 설계됩니다.</p>
+            <!-- Right Side: Core Explanations (col-span-6) -->
+            <div class="lg:col-span-6 space-y-3 text-xs md:text-sm">
+              <div class="space-y-0.5">
+                <span class="text-[10px] text-slate-500 font-semibold">💡 코드 설명</span>
+                <p id="modal-learn-desc" class="text-slate-300 leading-relaxed font-medium"></p>
+              </div>
+              <div class="space-y-0.5">
+                <span class="text-[10px] text-slate-500 font-semibold">❓ 왜 쓰나요?</span>
+                <p id="modal-learn-why" class="text-slate-300 leading-relaxed"></p>
+              </div>
+              <div class="space-y-0.5">
+                <span class="text-[10px] text-slate-500 font-semibold">📅 언제 쓰나요?</span>
+                <p id="modal-learn-when" class="text-slate-300 leading-relaxed"></p>
+              </div>
             </div>
           </div>
         </div>
@@ -621,6 +629,17 @@ print(fruits[0])  # apple</pre>
           </div>
         </div>
 
+      </div>
+
+      <!-- Recent History Section (col-span-12) -->
+      <div class="md:col-span-12 border-t border-slate-850 pt-5 mt-4 space-y-3">
+        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <i data-lucide="history" class="w-3.5 h-3.5 text-slate-500"></i>
+          <span>📜 최근 연습 히스토리</span>
+        </h4>
+        <div id="modal-history-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[160px] overflow-y-auto pr-1">
+          <!-- Dynamically populated from localStorage -->
+        </div>
       </div>
 
     </div>
@@ -2028,12 +2047,33 @@ print(fruits[0])  # apple</pre>
       // Extract active snippet database information
       const activeSnippet = snippets[currentDifficulty][snippetIndex];
       
-      // 1. Populate Learning Summary (코드 설명, 왜 쓰는지, 언제 쓰는지)
-      if (activeSnippet && activeSnippet.summary) {
-        document.getElementById('modal-learn-desc').innerText = activeSnippet.summary.desc || "";
-        document.getElementById('modal-learn-why').innerText = activeSnippet.summary.why || "";
-        document.getElementById('modal-learn-when').innerText = activeSnippet.summary.when || "";
+      // Save completed session to local storage history list
+      const timestampText = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) + 
+                            ' (' + new Date().toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' }) + ')';
+      
+      const historyEntry = {
+        timestamp: timestampText,
+        difficulty: currentDifficulty,
+        snippetIndex: snippetIndex,
+        cpm: cpm,
+        wpm: wpm,
+        acc: acc.toFixed(1),
+        time: formatTime(finalSec),
+        combo: maxCombo
+      };
+      
+      let historyList = JSON.parse(localStorage.getItem('typepy_history') || '[]');
+      historyList.unshift(historyEntry);
+      if (historyList.length > 9) {
+        historyList = historyList.slice(0, 9); // Keep last 9 items
       }
+      localStorage.setItem('typepy_history', JSON.stringify(historyList));
+      
+      // Render the history panel lists
+      renderHistoryList();
+      
+      // Load and display current session details in split-view panel
+      showHistoryDetail(0);
       
       // 2. Populate and Setup Interactive Quiz (응용법훈련 인터페이스)
       if (activeSnippet && activeSnippet.quiz) {
@@ -2070,6 +2110,138 @@ print(fruits[0])  # apple</pre>
       }
       
       document.getElementById('completion-modal').classList.remove('hidden');
+    }
+
+    // Render syntax-highlighted code inside the modal preview container
+    function renderHighlightedCode(code, container) {
+      container.innerHTML = '';
+      const charStyles = tokenizePython(code);
+      const lines = code.split('\n');
+      let charIdx = 0;
+      
+      lines.forEach((line, lineIdx) => {
+        const lineDiv = document.createElement('div');
+        lineDiv.className = 'flex items-start font-mono text-[11px] leading-relaxed py-0.5';
+        
+        const numSpan = document.createElement('span');
+        numSpan.className = 'w-6 text-right text-slate-600 select-none pr-2.5 border-r border-slate-800 mr-2.5 flex-shrink-0';
+        numSpan.innerText = lineIdx + 1;
+        lineDiv.appendChild(numSpan);
+        
+        const contentSpan = document.createElement('span');
+        contentSpan.className = 'flex-grow text-left whitespace-pre overflow-x-auto';
+        
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          const span = document.createElement('span');
+          span.className = charStyles[charIdx] || 'text-slate-300';
+          span.innerText = char;
+          contentSpan.appendChild(span);
+          charIdx++;
+        }
+        
+        if (lineIdx < lines.length - 1) {
+          charIdx++; // Step over newline character mapping
+        }
+        
+        lineDiv.appendChild(contentSpan);
+        container.appendChild(lineDiv);
+      });
+    }
+
+    // Display history item detail in the summary block
+    function showHistoryDetail(historyIdx) {
+      const historyList = JSON.parse(localStorage.getItem('typepy_history') || '[]');
+      const entry = historyList[historyIdx];
+      if (!entry) return;
+      
+      const snippet = snippets[entry.difficulty]?.[entry.snippetIndex];
+      if (!snippet) return;
+      
+      // Update Title to indicate history view vs current
+      const titleSpan = document.getElementById('modal-learn-title');
+      if (titleSpan) {
+        if (historyIdx === 0) {
+          titleSpan.innerText = "직전 완료 코드 & 핵심 요약";
+        } else {
+          titleSpan.innerText = `완료 코드 요약 (${entry.timestamp})`;
+        }
+      }
+      
+      // Render code preview with highlighting
+      const codePreview = document.getElementById('modal-code-preview');
+      if (codePreview) {
+        renderHighlightedCode(snippet.code, codePreview);
+      }
+      
+      // Populate Core Explanations
+      if (snippet.summary) {
+        document.getElementById('modal-learn-desc').innerText = snippet.summary.desc || "";
+        document.getElementById('modal-learn-why').innerText = snippet.summary.why || "";
+        document.getElementById('modal-learn-when').innerText = snippet.summary.when || "";
+      }
+    }
+
+    // Render list of previously typed exercises (타격 히스토리 내역 리스트)
+    function renderHistoryList() {
+      const historyList = JSON.parse(localStorage.getItem('typepy_history') || '[]');
+      const container = document.getElementById('modal-history-list');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      if (historyList.length === 0) {
+        container.innerHTML = '<div class="col-span-full text-center py-6 text-slate-500 text-xs font-medium">연습 완료 내역이 아직 없습니다.</div>';
+        return;
+      }
+      
+      const difficultyLabels = {
+        'beginner': '초급자',
+        'intermediate': '중급자',
+        'advanced': '상급자'
+      };
+      
+      const difficultyBadgeClasses = {
+        'beginner': 'bg-blue-500/10 border border-blue-500/20 text-blue-400',
+        'intermediate': 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400',
+        'advanced': 'bg-purple-500/10 border border-purple-500/20 text-purple-400'
+      };
+      
+      historyList.forEach((entry, idx) => {
+        const snippet = snippets[entry.difficulty]?.[entry.snippetIndex];
+        const snippetTitle = snippet ? snippet.summary.desc.split('입니다')[0].trim() : '파이썬 실습';
+        
+        const card = document.createElement('div');
+        card.className = 'bg-slate-950/40 border border-slate-800 hover:border-slate-700/80 rounded-xl p-3 flex flex-col justify-between gap-2 transition-all duration-150 relative';
+        
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${difficultyBadgeClasses[entry.difficulty]}">${difficultyLabels[entry.difficulty]}</span>
+            <span class="text-[9px] text-slate-500 font-mono">${entry.timestamp}</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-left font-mono text-[10px] py-0.5">
+            <div>
+              <span class="text-[9px] text-slate-500 block leading-tight">평균 타수</span>
+              <span class="text-white font-bold">${entry.cpm} CPM</span>
+            </div>
+            <div>
+              <span class="text-[9px] text-slate-500 block leading-tight">최종 정확도</span>
+              <span class="text-emerald-400 font-bold">${entry.acc}%</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between border-t border-slate-800/40 pt-1.5 gap-2">
+            <span class="text-[10px] text-slate-400 font-medium truncate max-w-[110px]" title="${snippetTitle}">${snippetTitle}</span>
+            <button class="text-[9px] text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-0.5 cursor-pointer bg-slate-850 hover:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700/50 transition-colors" onclick="showHistoryDetail(${idx})">
+              <span>상세</span>
+              <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            </button>
+          </div>
+        `;
+        
+        container.appendChild(card);
+      });
+      
+      lucide.createIcons();
     }
 
     // Handle Quiz Option Selection (응용법훈련 인터페이스 동작 로직)
