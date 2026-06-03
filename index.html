@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TypePy - Python 타자 연습</title>
+  
+  <!-- Pretendard Font -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  
+  <!-- JetBrains Mono Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Tailwind Theme Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // Theme colors defined using CSS variables
+            themePage: 'var(--bg-page)',
+            themeSidebar: 'var(--bg-sidebar)',
+            themeCard: 'var(--bg-card)',
+            themeButton: 'var(--bg-button)',
+            themeButtonHover: 'var(--bg-button-hover)',
+            themeBorder: 'var(--border-color)',
+            themeTextMain: 'var(--text-main)',
+            themeTextSecondary: 'var(--text-secondary)',
+            themeTextCorrect: 'var(--text-correct)',
+            emerald: {
+              400: '#34d399',
+              500: '#10b981'
+            }
+          },
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    /* Premium Theme CSS Variables */
+    :root {
+      --bg-page: #090d16;
+      --bg-sidebar: #0e1526;
+      --bg-card: #151f32;
+      --bg-button: #1d2a44;
+      --bg-button-hover: #2b3d5c;
+      --border-color: rgba(43, 61, 92, 0.4);
+      --text-main: #cbd5e1;
+      --text-secondary: #64748b;
+      --text-correct: #f1f5f9;
+    }
+    
+    body.light-theme {
+      --bg-page: #f8fafc;
+      --bg-sidebar: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-button: #e2e8f0;
+      --bg-button-hover: #cbd5e1;
+      --border-color: rgba(203, 213, 225, 0.6);
+      --text-main: #334155;
+      --text-secondary: #64748b;
+      --text-correct: #0f172a;
+    }
+    
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-page);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--bg-button);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #10b981;
+    }
+    
+    /* Active Block Cursor */
+    .active-char {
+      background-color: #10b981 !important;
+      color: #090d16 !important;
+      font-weight: 700;
+      border-radius: 2px;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.7);
+      animation: pulseCursor 1s infinite;
+    }
+    
+    @keyframes pulseCursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    
+    /* Unfocused overlay animation */
+    .unfocused-overlay {
+      backdrop-filter: blur(4px);
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-themePage text-themeTextMain min-h-screen flex font-sans overflow-hidden transition-colors duration-300">
+
+  <!-- ================= LEFT SIDEBAR ================= -->
+  <aside class="w-64 bg-themeSidebar border-r border-themeBorder flex flex-col justify-between p-6 select-none shrink-0">
+    <div class="space-y-8">
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 flex items-center justify-center bg-slate-800/50 rounded-xl border border-slate-700/30 shadow-md">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.916 2.004c-1.848.005-3.565.176-4.52.483-2.316.744-2.453 2.18-2.453 4.296v1.391h7.11v.961H3.665c-2.115 0-3.329 1.137-4.04 3.479-.762 2.507-.803 4.103-.027 6.64.66 2.157 1.83 3.14 3.945 3.14h2.15v-2.936c0-2.387 1.942-4.329 4.33-4.329h5.811c2.116 0 3.39-1.127 3.985-3.415.632-2.433.687-4.316 0-6.732-.6-2.18-1.785-3.08-3.901-3.08h-2.15V5.578c0-2.073-1.427-3.57-3.903-3.574zm-2.923 1.99a1.053 1.053 0 110 2.106 1.053 1.053 0 010-2.106z" fill="#387eb8"/>
+            <path d="M12.084 21.996c1.848-.005 3.565-.176 4.52-.483 2.316-.744 2.453-2.18 2.453-4.296v-1.391h-7.11v-.961H20.33c2.116 0 3.33-1.137 4.04-3.479.763-2.507.804-4.103.028-6.64-.66-2.157-1.83-3.14-3.945-3.14h-2.15v2.936c0 2.387-1.942 4.329-4.33 4.329H8.163c-2.116 0-3.39 1.127-3.985 3.415-.632 2.433-.687 4.316 0 6.732.6 2.18 1.785 3.08 3.901 3.08h2.15v-2.574c0 2.073 1.427 3.57 3.903 3.574zm2.923-1.99a1.053 1.053 0 110-2.106 1.053 1.053 0 010-2.106z" fill="#ffe052"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-white tracking-wide">TypePy</h1>
+          <p class="text-xs text-slate-500 font-medium">Python 타자연습</p>
+        </div>
+      </div>
+
+      <!-- Main Menu -->
+      <nav class="space-y-1">
+        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/10 border-l-4 border-emerald-500 text-emerald-400 font-medium transition-all duration-150">
+          <i data-lucide="code-2" class="w-5 h-5"></i>
+          <span>연습하기</span>
+        </a>
+        <a href="#" onclick="alert('통계 기능은 준비 중입니다.');" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800/30 hover:text-slate-200 transition-all duration-150">
+          <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+          <span>통계</span>
+        </a>
+        <a href="#" onclick="alert('랭킹 서비스는 준비 중입니다.');" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800/30 hover:text-slate-200 transition-all duration-150">
+          <i data-lucide="trophy" class="w-5 h-5"></i>
+          <span>랭킹</span>
+        </a>
+        <a href="#" onclick="alert('설정 메뉴는 준비 중입니다.');" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800/30 hover:text-slate-200 transition-all duration-150">
+          <i data-lucide="settings" class="w-5 h-5"></i>
+          <span>설정</span>
+        </a>
+      </nav>
+
+      <!-- Mode Selector -->
+      <div class="space-y-3 pt-4 border-t border-themeBorder/40">
+        <h2 class="text-xs font-bold text-slate-500 tracking-wider px-2 uppercase">모드 선택</h2>
+        <div class="space-y-1">
+          <button onclick="setPracticeMode('normal')" id="mode-normal" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-150 text-white font-medium bg-slate-800/40">
+            <div class="flex items-center gap-2.5">
+              <i id="mode-dot-normal" data-lucide="circle-dot" class="w-4 h-4 text-emerald-400"></i>
+              <span>일반 모드</span>
+            </div>
+          </button>
+          <button onclick="setPracticeMode('time')" id="mode-time" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-150 text-slate-400 hover:text-slate-200">
+            <div class="flex items-center gap-2.5">
+              <i id="mode-dot-time" data-lucide="circle" class="w-4 h-4 text-slate-500"></i>
+              <span>타임어택</span>
+            </div>
+          </button>
+          <button onclick="setPracticeMode('line')" id="mode-line" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-150 text-slate-400 hover:text-slate-200">
+            <div class="flex items-center gap-2.5">
+              <i id="mode-dot-line" data-lucide="circle" class="w-4 h-4 text-slate-500"></i>
+              <span>한 줄 모드</span>
+            </div>
+          </button>
+          <button onclick="setPracticeMode('complete')" id="mode-complete" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-150 text-slate-400 hover:text-slate-200">
+            <div class="flex items-center gap-2.5">
+              <i id="mode-dot-complete" data-lucide="circle" class="w-4 h-4 text-slate-500"></i>
+              <span>코드 완성</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Theme Switcher -->
+    <div class="pt-4 border-t border-themeBorder/40 flex items-center justify-between">
+      <div class="flex items-center gap-2 text-sm text-slate-400 font-medium">
+        <i data-lucide="moon" class="w-4 h-4"></i>
+        <span>다크 모드</span>
+      </div>
+      <!-- Custom Toggle Slider -->
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" id="theme-toggle" class="sr-only peer" checked>
+        <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 peer-checked:after:bg-white peer-checked:after:border-emerald-500"></div>
+      </label>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN CONTENT CONTAINER ================= -->
+  <main class="flex-1 flex flex-col p-8 overflow-y-auto relative">
+    
+    <!-- Top Header -->
+    <header class="flex justify-between items-center mb-6 select-none">
+      <div class="flex items-center gap-2 text-sm text-slate-400 font-medium">
+        <span class="hover:text-slate-200 cursor-pointer">연습하기</span>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600"></i>
+        <span id="breadcrumb-mode" class="hover:text-slate-200 cursor-pointer">일반 모드</span>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600"></i>
+        <span id="breadcrumb-difficulty" class="text-white">중급자</span>
+      </div>
+      
+      <!-- Selection Dropdowns -->
+      <div class="flex items-center gap-3">
+        <!-- Difficulty Dropdown Selector -->
+        <div class="relative inline-block text-left">
+          <button id="difficulty-btn" class="bg-themeCard hover:bg-themeButton border border-themeBorder text-themeTextMain text-sm px-4 py-2 rounded-xl inline-flex items-center gap-2 transition-all">
+            <span id="current-difficulty-text">중급자</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+          </button>
+          <div id="difficulty-dropdown" class="hidden absolute right-0 mt-2 w-32 rounded-xl bg-themeCard border border-themeBorder shadow-2xl z-20">
+            <div class="py-1">
+              <button onclick="selectDifficulty('beginner')" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800/50 hover:text-emerald-400 transition-colors font-medium">초급자</button>
+              <button onclick="selectDifficulty('intermediate')" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800/50 hover:text-emerald-400 transition-colors font-medium">중급자</button>
+              <button onclick="selectDifficulty('advanced')" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800/50 hover:text-emerald-400 transition-colors font-medium">상급자</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Language Selector (Visual only) -->
+        <div class="relative inline-block text-left">
+          <button class="bg-themeCard hover:bg-themeButton border border-themeBorder text-themeTextMain text-sm px-4 py-2.5 rounded-xl inline-flex items-center gap-2.5 transition-all">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.916 2.004c-1.848.005-3.565.176-4.52.483-2.316.744-2.453 2.18-2.453 4.296v1.391h7.11v.961H3.665c-2.115 0-3.329 1.137-4.04 3.479-.762 2.507-.803 4.103-.027 6.64.66 2.157 1.83 3.14 3.945 3.14h2.15v-2.936c0-2.387 1.942-4.329 4.33-4.329h5.811c2.116 0 3.39-1.127 3.985-3.415.632-2.433.687-4.316 0-6.732-.6-2.18-1.785-3.08-3.901-3.08h-2.15V5.578c0-2.073-1.427-3.57-3.903-3.574z" fill="#387eb8"/>
+              <path d="M12.084 21.996c1.848-.005 3.565-.176 4.52-.483 2.316-.744 2.453-2.18 2.453-4.296v-1.391h-7.11v-.961H20.33c2.116 0 3.33-1.137 4.04-3.479.763-2.507.804-4.103.028-6.64-.66-2.157-1.83-3.14-3.945-3.14h-2.15v2.936c0 2.387-1.942 4.329-4.33 4.329H8.163c-2.116 0-3.39 1.127-3.985 3.415-.632 2.433-.687 4.316 0 6.732.6 2.18 1.785 3.08 3.901 3.08h2.15v-2.574c0 2.073 1.427 3.57 3.903 3.574z" fill="#ffe052"/>
+            </svg>
+            <span>Python</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Top Dashboard Stats -->
+    <section class="grid grid-cols-5 gap-4 mb-6 select-none">
+      <!-- Time Stat -->
+      <div class="bg-themeCard border border-themeBorder rounded-2xl p-4 flex flex-col justify-between shadow-lg relative overflow-hidden">
+        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">시간</span>
+        <div class="flex items-center gap-3 mt-2">
+          <i data-lucide="clock" class="w-5 h-5 text-slate-400"></i>
+          <span id="stat-time" class="text-2xl font-bold text-white tracking-tight">00:00</span>
+        </div>
+      </div>
+      <!-- Accuracy Stat -->
+      <div class="bg-themeCard border border-themeBorder rounded-2xl p-4 flex flex-col justify-between shadow-lg relative overflow-hidden">
+        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">정확도</span>
+        <div class="flex items-center gap-3 mt-2">
+          <i data-lucide="target" class="w-5 h-5 text-slate-400"></i>
+          <span id="stat-accuracy" class="text-2xl font-bold text-white tracking-tight">100.0%</span>
+        </div>
+      </div>
+      <!-- WPM Stat -->
+      <div class="bg-themeCard border border-themeBorder rounded-2xl p-4 flex flex-col justify-between shadow-lg relative overflow-hidden">
+        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">WPM</span>
+        <div class="flex items-center gap-3 mt-2">
+          <i data-lucide="gauge" class="w-5 h-5 text-slate-400"></i>
+          <span id="stat-wpm" class="text-2xl font-bold text-white tracking-tight">0</span>
+        </div>
+      </div>
+      <!-- Typing speed / CPM Stat -->
+      <div class="bg-themeCard border border-themeBorder rounded-2xl p-4 flex flex-col justify-between shadow-lg relative overflow-hidden">
+        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">타수 (CPM)</span>
+        <div class="flex items-center gap-3 mt-2">
+          <i data-lucide="keyboard" class="w-5 h-5 text-slate-400"></i>
+          <span id="stat-cpm" class="text-2xl font-bold text-white tracking-tight">0</span>
+        </div>
+      </div>
+      <!-- Combo Stat -->
+      <div class="bg-themeCard border border-themeBorder rounded-2xl p-4 flex flex-col justify-between shadow-lg relative overflow-hidden">
+        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">연속정확</span>
+        <div class="flex items-center gap-3 mt-2">
+          <i data-lucide="flame" class="w-5 h-5 text-slate-400"></i>
+          <span id="stat-combo" class="text-2xl font-bold text-white tracking-tight">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MIDDLE WORKSPACE (EDITOR & EXPLANATION) ================= -->
+    <section class="grid grid-cols-3 gap-6 mb-6">
+      
+      <!-- Left Panel: Typing Area -->
+      <div class="col-span-2 bg-themeCard border border-themeBorder rounded-2xl p-6 shadow-lg relative min-h-[290px] flex">
+        
+        <!-- Unfocused Focus Overlay -->
+        <div id="unfocused-overlay" class="absolute inset-0 bg-slate-950/80 unfocused-overlay rounded-2xl z-20 flex flex-col items-center justify-center cursor-pointer select-none">
+          <i data-lucide="keyboard" class="w-12 h-12 text-emerald-400 animate-bounce mb-3"></i>
+          <p class="text-white font-semibold">화면을 클릭하여 타자 연습을 시작하세요</p>
+          <p class="text-slate-500 text-xs mt-1">입력 준비가 완료되면 타이핑이 활성화됩니다</p>
+        </div>
+
+        <div class="w-full flex font-mono relative text-[15px] select-none">
+          <!-- Line Numbers -->
+          <div id="line-numbers" class="w-8 text-right text-slate-600 font-mono pr-4 border-r border-themeBorder select-none leading-8">
+            <!-- Dynamically populated -->
+          </div>
+          <!-- Code Lines Container -->
+          <div id="code-container" class="flex-1 pl-4 leading-8 relative whitespace-pre font-mono tracking-wide text-[var(--text-main)] overflow-y-auto">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Info Panel -->
+      <div id="explanation-panel" class="bg-themeCard border border-themeBorder rounded-2xl p-6 shadow-lg flex flex-col justify-between select-none relative">
+        <button onclick="closeExplanationPanel()" class="absolute top-4 right-4 text-slate-500 hover:text-slate-300 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+
+        <div class="space-y-4">
+          <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider">지금 치는 코드</h2>
+          
+          <!-- Code Preview Box -->
+          <div class="bg-slate-950/50 border border-themeBorder/40 rounded-xl p-3 flex justify-between items-center font-mono">
+            <span id="explanation-code-preview" class="text-emerald-400 font-semibold text-sm">return True</span>
+            <span id="explanation-badge" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-md">불리언 값</span>
+          </div>
+
+          <!-- Narrative description -->
+          <p id="explanation-text" class="text-slate-400 text-sm leading-relaxed">
+            함수의 결과를 True로 반환합니다. True는 참(True)을 의미하는 불리언 값입니다.
+          </p>
+        </div>
+
+        <div class="space-y-4 pt-4 border-t border-themeBorder/30">
+          <h3 class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">주로 사용되는 용도</h3>
+          <div id="explanation-tags" class="flex flex-wrap gap-1.5">
+            <span class="bg-slate-800/40 border border-slate-700/30 text-slate-300 text-xs px-2.5 py-1 rounded-full">함수의 반환값</span>
+            <span class="bg-slate-800/40 border border-slate-700/30 text-slate-300 text-xs px-2.5 py-1 rounded-full">조건문 결과</span>
+            <span class="bg-slate-800/40 border border-slate-700/30 text-slate-300 text-xs px-2.5 py-1 rounded-full">논리값 표현</span>
+          </div>
+          <button class="w-full mt-2 text-xs text-slate-400 hover:text-emerald-400 border-t border-themeBorder/20 pt-3 flex items-center justify-center gap-1 transition-colors font-medium">
+            <i data-lucide="info" class="w-3.5 h-3.5"></i>
+            <span>자세히 보기</span>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BOTTOM PANEL (VIRTUAL KEYBOARD) ================= -->
+    <section class="bg-themeCard border border-themeBorder rounded-2xl p-5 shadow-lg relative mb-6 shrink-0 select-none">
+      
+      <!-- SVG hands outline layer -->
+      <div class="absolute inset-x-0 bottom-0 pointer-events-none flex justify-center items-end opacity-[0.14] z-10 select-none">
+        <svg class="w-[85%] h-44 text-slate-400" viewBox="0 0 800 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Left Hand -->
+          <path d="M 160,200 C 170,180 175,150 185,130 C 190,120 195,80 200,65 C 202,60 205,60 208,65 C 212,75 218,115 220,130 C 220,110 225,70 230,50 C 232,45 236,45 238,50 C 242,65 248,110 250,130 C 250,100 258,60 262,40 C 264,35 268,35 270,40 C 275,55 280,105 282,125 C 282,100 288,65 292,50 C 294,45 298,45 300,50 C 305,65 310,100 310,125 C 310,135 325,130 335,140 C 345,150 355,170 360,200" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Right Hand -->
+          <path d="M 640,200 C 630,180 625,150 615,130 C 610,120 605,80 600,65 C 598,60 595,60 592,65 C 588,75 582,115 580,130 C 580,110 575,70 570,50 C 568,45 564,45 562,50 C 558,65 552,110 550,130 C 550,100 542,60 538,40 C 536,35 532,35 530,40 C 525,55 520,105 518,125 C 518,100 512,65 508,50 C 506,45 502,45 500,50 C 495,65 490,100 490,125 C 490,135 475,130 465,140 C 455,150 445,170 440,200" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <!-- Keys rows mapping QWERTY layout -->
+      <div class="flex flex-col gap-2 w-full font-mono max-w-4xl mx-auto">
+        <!-- Row 1 -->
+        <div class="flex gap-1.5 w-full justify-between">
+          <button data-key="Backquote" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">~<br>`</button>
+          <button data-key="Digit1" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">1</button>
+          <button data-key="Digit2" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">2</button>
+          <button data-key="Digit3" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">3</button>
+          <button data-key="Digit4" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">4</button>
+          <button data-key="Digit5" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">5</button>
+          <button data-key="Digit6" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">6</button>
+          <button data-key="Digit7" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">7</button>
+          <button data-key="Digit8" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">8</button>
+          <button data-key="Digit9" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">9</button>
+          <button data-key="Digit0" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">0</button>
+          <button data-key="Minus" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">-</button>
+          <button data-key="Equal" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">=</button>
+          <button data-key="Backspace" class="key w-20 h-11 bg-slate-800 border border-themeBorder text-slate-300 rounded-lg flex items-center justify-center text-[11px] font-semibold shadow select-none transition-all duration-75">backspace</button>
+        </div>
+        
+        <!-- Row 2 -->
+        <div class="flex gap-1.5 w-full justify-between">
+          <button data-key="Tab" class="key w-14 h-11 bg-slate-800 border border-themeBorder text-slate-300 rounded-lg flex items-center justify-center text-[11px] font-semibold shadow select-none transition-all duration-75">tab</button>
+          <button data-key="KeyQ" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">q</button>
+          <button data-key="KeyW" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">w</button>
+          <button data-key="KeyE" id="key-KeyE" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">e</button>
+          <button data-key="KeyR" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">r</button>
+          <button data-key="KeyT" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">t</button>
+          <button data-key="KeyY" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">y</button>
+          <button data-key="KeyU" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">u</button>
+          <button data-key="KeyI" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">i</button>
+          <button data-key="KeyO" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">o</button>
+          <button data-key="KeyP" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">p</button>
+          <button data-key="BracketLeft" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">[</button>
+          <button data-key="BracketRight" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">]</button>
+          <button data-key="Backslash" class="key w-12 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">\</button>
+        </div>
+        
+        <!-- Row 3 -->
+        <div class="flex gap-1.5 w-full justify-between">
+          <button data-key="CapsLock" class="key w-16 h-11 bg-slate-800 border border-themeBorder text-slate-300 rounded-lg flex items-center justify-center text-[11px] font-semibold shadow select-none transition-all duration-75">caps</button>
+          <button data-key="KeyA" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">a</button>
+          <button data-key="KeyS" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">s</button>
+          <button data-key="KeyD" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">d</button>
+          <button data-key="KeyF" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">f</button>
+          <button data-key="KeyG" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">g</button>
+          <button data-key="KeyH" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">h</button>
+          <button data-key="KeyJ" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">j</button>
+          <button data-key="KeyK" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">k</button>
+          <button data-key="KeyL" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">l</button>
+          <button data-key="Semicolon" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">;</button>
+          <button data-key="Quote" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">'</button>
+          <button data-key="Enter" class="key w-20 h-11 bg-slate-800 border border-themeBorder text-slate-300 rounded-lg flex items-center justify-center text-[11px] font-semibold shadow select-none transition-all duration-75">enter</button>
+        </div>
+        
+        <!-- Row 4 -->
+        <div class="flex gap-1.5 w-full justify-between">
+          <button data-key="ShiftLeft" class="key w-24 h-11 bg-slate-800 border border-themeBorder text-slate-300 rounded-lg flex items-center justify-center text-[11px] font-semibold shadow select-none transition-all duration-75">shift</button>
+          <button data-key="KeyZ" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">z</button>
+          <button data-key="KeyX" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">x</button>
+          <button data-key="KeyC" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">c</button>
+          <button data-key="KeyV" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">v</button>
+          <button data-key="KeyB" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">b</button>
+          <button data-key="KeyN" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">n</button>
+          <button data-key="KeyM" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">m</button>
+          <button data-key="Comma" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">,</button>
+          <button data-key="Period" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">.</button>
+          <button data-key="Slash" class="key flex-1 h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75">/</button>
+          <button data-key="ShiftRight" class="key w-28 h-11 bg-slate-800 border border-themeBorder text-slate-300 rounded-lg flex items-center justify-center text-[11px] font-semibold shadow select-none transition-all duration-75">shift</button>
+        </div>
+        
+        <!-- Row 5 -->
+        <div class="flex gap-1.5 w-full justify-between">
+          <button data-key="ControlLeft" class="key w-16 h-11 bg-slate-800 border border-themeBorder text-slate-300 rounded-lg flex items-center justify-center text-[11px] font-semibold shadow select-none transition-all duration-75">ctrl</button>
+          <button data-key="AltLeft" class="key w-16 h-11 bg-slate-800 border border-themeBorder text-slate-300 rounded-lg flex items-center justify-center text-[11px] font-semibold shadow select-none transition-all duration-75">alt</button>
+          <button data-key="Space" class="key flex-[6] h-11 bg-slate-800/40 border border-themeBorder text-slate-400 rounded-lg flex items-center justify-center text-xs font-semibold shadow select-none transition-all duration-75 relative">
+            <span class="absolute bottom-1 w-20 h-1 bg-emerald-500 rounded-full opacity-60"></span>
+          </button>
+          <button data-key="AltRight" class="key w-16 h-11 bg-slate-800 border border-themeBorder text-slate-300 rounded-lg flex items-center justify-center text-[11px] font-semibold shadow select-none transition-all duration-75">alt</button>
+          <button data-key="ControlRight" class="key w-16 h-11 bg-slate-800 border border-themeBorder text-slate-300 rounded-lg flex items-center justify-center text-[11px] font-semibold shadow select-none transition-all duration-75">ctrl</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STATUS BAR ================= -->
+    <footer class="flex justify-between items-center bg-slate-900 border border-themeBorder rounded-2xl px-6 py-4 shadow-lg shrink-0 select-none">
+      <!-- Left side: Goal & Progress Bar -->
+      <div class="flex items-center gap-4">
+        <i data-lucide="trophy" class="w-5 h-5 text-amber-400"></i>
+        <div class="flex items-center gap-3">
+          <span id="goal-text" class="text-sm font-semibold text-slate-300 tracking-wide">이번 주 목표 0 / 300 WPM</span>
+          <div class="w-48 bg-slate-800 border border-slate-700/50 h-2.5 rounded-full overflow-hidden relative shadow-inner">
+            <div id="goal-progress" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(52,211,153,0.5)]" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side: Remaining Time & Action Button -->
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
+          <i data-lucide="clock" class="w-4.5 h-4.5 text-slate-400"></i>
+          <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">남은 시간</span>
+          <span id="countdown-timer" class="text-sm font-bold text-white font-mono">08:37</span>
+        </div>
+        <button id="pause-btn" onclick="togglePause()" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/50 text-xs font-semibold px-4.5 py-2 rounded-xl flex items-center gap-1.5 cursor-pointer shadow transition-all duration-150 active:scale-95">
+          <i id="pause-icon" data-lucide="pause" class="w-4 h-4"></i>
+          <span id="pause-text">일시정지</span>
+        </button>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ================= SUCCESS/COMPLETION MODAL ================= -->
+  <div id="completion-modal" class="hidden fixed inset-0 bg-slate-950/85 backdrop-blur-md flex items-center justify-center z-50 p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl space-y-6 text-center select-none">
+      <div class="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto shadow-inner animate-bounce mb-2">
+        <i data-lucide="trophy" class="w-8 h-8"></i>
+      </div>
+      
+      <div class="space-y-1.5">
+        <h3 class="text-2xl font-bold text-white tracking-tight">연습 완료!</h3>
+        <p class="text-slate-400 text-sm">파이썬 코드 타자 연습 세션을 완료했습니다.</p>
+      </div>
+
+      <!-- Stats Summary -->
+      <div class="grid grid-cols-2 gap-3 bg-slate-850 p-4 rounded-2xl border border-slate-800 text-left font-mono">
+        <div class="space-y-1">
+          <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">소요 시간</span>
+          <p id="modal-time" class="text-base font-bold text-white">01:23</p>
+        </div>
+        <div class="space-y-1">
+          <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">평균 WPM</span>
+          <p id="modal-wpm" class="text-base font-bold text-emerald-400">86 WPM</p>
+        </div>
+        <div class="space-y-1 pt-2 border-t border-slate-800">
+          <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">최종 정확도</span>
+          <p id="modal-accuracy" class="text-base font-bold text-white">98.6%</p>
+        </div>
+        <div class="space-y-1 pt-2 border-t border-slate-800">
+          <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">평균 타수(CPM)</span>
+          <p id="modal-cpm" class="text-base font-bold text-white">430 타</p>
+        </div>
+      </div>
+
+      <div class="flex gap-3 pt-2">
+        <button onclick="restartSession()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3.5 rounded-xl border border-slate-700 active:scale-95 transition-all text-sm">다시 도전</button>
+        <button onclick="loadNextSnippet()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3.5 rounded-xl active:scale-95 transition-all text-sm shadow-[0_0_15px_rgba(16,185,129,0.3)]">다음 단계</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= APPLICATION CODE DATABASE & ENGINE ================= -->
+  <script>
+    // Python Code Snippets Database categorized by difficulty
+    const snippets = {
+      beginner: [
+        {
+          code: 'name = "TypePy"\nage = 20\nprint(f"Welcome to {name}!")\nprint(f"Age is {age} years.")',
+          lineData: [
+            {
+              text: 'name = "TypePy"',
+              tag: '변수 할당',
+              desc: '문자열 "TypePy"를 name 변수에 대입합니다. 파이썬은 변수 선언 시 타입을 명시할 필요가 없는 동적 타입 언어입니다.',
+              tags: ['변수 정의', '문자열 대입', '동적 타이핑']
+            },
+            {
+              text: 'age = 20',
+              tag: '변수 할당',
+              desc: '정수형 값 20을 age 변수에 대입합니다. 등호(=)는 오른쪽의 값을 왼쪽 변수에 넣는 대입 연산자입니다.',
+              tags: ['변수 정의', '정수 대입', '대입 연산자']
+            },
+            {
+              text: 'print(f"Welcome to {name}!")',
+              tag: '출력 & F-string',
+              desc: 'f-string 서식을 사용하여 문자열 사이에 중괄호 {}를 두고, name 변수의 값을 문자열 포맷에 맞게 직접 치환하여 콘솔에 출력합니다.',
+              tags: ['화면 출력', '문자열 포맷', 'f-string']
+            },
+            {
+              text: 'print(f"Age is {age} years.")',
+              tag: '출력 & F-string',
+              desc: 'age 변수의 정수 값을 문자열에 결합하여 출력합니다. f-string은 파이썬에서 가장 간결하고 권장되는 문자열 서식 방식입니다.',
+              tags: ['화면 출력', '변수 포맷팅', '디버깅']
+            }
+          ]
+        },
+        {
+          code: 'numbers = [1, 2, 3, 4, 5]\ntotal = sum(numbers)\naverage = total / len(numbers)',
+          lineData: [
+            {
+              text: 'numbers = [1, 2, 3, 4, 5]',
+              tag: '리스트 생성',
+              desc: '1부터 5까지의 정수를 요소로 갖는 numbers 리스트(list) 자료구조를 대입하여 생성합니다.',
+              tags: ['자료구조', '리스트', '정수형 배열']
+            },
+            {
+              text: 'total = sum(numbers)',
+              tag: '내장함수 sum',
+              desc: '내장함수 sum()을 사용해 리스트의 모든 요소들의 총합을 한 번에 편리하게 계산하여 반환합니다.',
+              tags: ['합계 계산', '내장함수', '수학 연산']
+            },
+            {
+              text: 'average = total / len(numbers)',
+              tag: '산술 연산',
+              desc: '총합(total)을 리스트의 개수(len)로 나누어 평균값을 연산합니다. / 기호는 실수 나눗셈 연산자입니다.',
+              tags: ['평균 계산', '길이 조회', '실수 나눗셈']
+            }
+          ]
+        }
+      ],
+      intermediate: [
+        {
+          code: 'def is_prime(n):\n    if n < 2:\n        return False\n    for i in range(2, int(n ** 0.5) + 1):\n        if n % i == 0:\n            return False\n    return True',
+          lineData: [
+            {
+              text: 'def is_prime(n):',
+              tag: '함수 선언',
+              desc: '소수를 판별하기 위해 하나의 매개변수 n을 전달받는 is_prime 함수를 정의하여 선언합니다.',
+              tags: ['함수 정의', '매개변수 n', '소수 판별']
+            },
+            {
+              text: '    if n < 2:',
+              tag: '조건문',
+              desc: 'n이 2보다 작을 경우 예외를 판단합니다. 2보다 작으면 소수가 아니기 때문에 조건문 아래 블록으로 빠집니다.',
+              tags: ['비교 연산자', '조건 분기', '예외 처리']
+            },
+            {
+              text: '        return False',
+              tag: '불리언 반환',
+              desc: 'n이 2 미만일 경우, 소수가 아님이 확실하므로 거짓(False)을 최종 반환하고 함수 실행을 종료합니다.',
+              tags: ['False 리턴', '함수 탈출', '불리언 객체']
+            },
+            {
+              text: '    for i in range(2, int(n ** 0.5) + 1):',
+              tag: '효율적 루프',
+              desc: '2부터 n의 제곱근(n ** 0.5)까지의 정수 범위를 순회합니다. 효율적인 소수 판별에 많이 쓰이는 수학 법칙 기반 루프입니다.',
+              tags: ['범위 순회', '제곱 연산', '실수 정수 변환']
+            },
+            {
+              text: '        if n % i == 0:',
+              tag: '나머지 검사',
+              desc: 'n을 루프 변수 i로 나눈 나머지가 0인지 확인하여 나누어떨어지는 약수가 있는지 판별하는 조건문입니다.',
+              tags: ['나머지 연산자', '약수 확인', '나눗셈 판별']
+            },
+            {
+              text: '            return False',
+              tag: '불리언 반환',
+              desc: '나누어떨어지는 약수 i가 존재하므로 소수가 아닙니다. 즉시 False를 반환하며 반복문과 함수를 한 번에 벗어납니다.',
+              tags: ['False 리턴', '조건 만족', '즉시 이탈']
+            },
+            {
+              text: '    return True',
+              tag: '불리언 반환',
+              desc: '2부터 제곱근 범위까지 나누어떨어지는 수가 없었으므로 완벽한 소수입니다. 참(True)을 최종 결과로 반환합니다.',
+              tags: ['True 리턴', '소수 검증 완료', '결과 반환']
+            }
+          ]
+        },
+        {
+          code: 'squares = {x: x**2 for x in range(1, 6)}\neven_squares = [v for v in squares.values() if v % 2 == 0]',
+          lineData: [
+            {
+              text: 'squares = {x: x**2 for x in range(1, 6)}',
+              tag: '딕셔너리 컴프리헨션',
+              desc: '1부터 5까지 범위의 수 x를 키로 두고, x의 제곱을 값으로 하는 키-값 쌍의 딕셔너리를 축약 방식으로 생성합니다.',
+              tags: ['딕셔너리', '컴프리헨션', '제곱수']
+            },
+            {
+              text: 'even_squares = [v for v in squares.values() if v % 2 == 0]',
+              tag: '리스트 컴프리헨션',
+              desc: 'squares 딕셔너리의 값들(values) 중에서 짝수인 것만 조건 필터링하여 새로운 리스트를 인라인 방식으로 빌드합니다.',
+              tags: ['리스트', '값 필터링', '인라인 루프']
+            }
+          ]
+        }
+      ],
+      advanced: [
+        {
+          code: 'def debug(func):\n    def wrapper(*args, **kwargs):\n        print(f"Calling {func.__name__}")\n        return func(*args, **kwargs)\n    return wrapper',
+          lineData: [
+            {
+              text: 'def debug(func):',
+              tag: '데코레이터 정의',
+              desc: '함수 객체 func를 매개변수로 직접 받아서 기능을 꾸며주는 외부 데코레이터(Decorator) 함수를 정의합니다.',
+              tags: ['고급 파이썬', '데코레이터', '일급 함수']
+            },
+            {
+              text: '    def wrapper(*args, **kwargs):',
+              tag: '가변 인자 래퍼',
+              desc: '실제 타겟 함수를 감싸서 호출 전후 로그를 대행하는 내부 클로저 함수입니다. 가변 위치 인자(*args)와 가변 키워드 인자(**kwargs)를 수용합니다.',
+              tags: ['가변 매개변수', '클로저 함수', '인자 팩킹']
+            },
+            {
+              text: '        print(f"Calling {func.__name__}")',
+              tag: '메타데이터 사용',
+              desc: 'func.__name__을 활용해 실제 실행되는 함수의 영문 이름을 확인하고, 실행하기에 앞서 호출 로그를 미리 찍어둡니다.',
+              tags: ['메타 클래스', '이름 조회', '출력문']
+            },
+            {
+              text: '        return func(*args, **kwargs)',
+              tag: '원본 실행 및 반환',
+              desc: '전달받은 모든 인자를 활용하여 가로챈 원래의 함수 func를 정상 구동하고 결과값을 반환합니다.',
+              tags: ['인자 언팩킹', '함수 구동', '값 전달']
+            },
+            {
+              text: '    return wrapper',
+              tag: '클로저 반환',
+              desc: '데코레이팅된 새로운 래퍼 함수(wrapper)를 외부로 반환하여, 호출 지점에서 기존 함수 대신 새 함수가 실행되게 합니다.',
+              tags: ['함수 객체 반환', '데코레이터 패턴', '클로저 리턴']
+            }
+          ]
+        },
+        {
+          code: 'def fibonacci(limit):\n    a, b = 0, 1\n    while a < limit:\n        yield a\n        a, b = b, a + b',
+          lineData: [
+            {
+              text: 'def fibonacci(limit):',
+              tag: '제너레이터 정의',
+              desc: '특정 한계값(limit) 미만까지 피보나치 수열을 동적으로 순차 생성하는 제너레이터 함수를 선언합니다.',
+              tags: ['제너레이터', '피보나치', '이름 선언']
+            },
+            {
+              text: '    a, b = 0, 1',
+              tag: '다중 대입 연산',
+              desc: '피보나치의 초기 변수 a, b에 각각 0, 1을 튜플 언패킹 방식으로 동시 대입하여 값을 초기화합니다.',
+              tags: ['튜플 언패킹', '다중 할당', '변수 선언']
+            },
+            {
+              text: '    while a < limit:',
+              tag: '반복 조건 루프',
+              desc: '변수 a의 값이 지정된 limit에 도달하기 전까지 피보나치 항 연산을 지속하는 조건부 반복 루프입니다.',
+              tags: ['while 루프', '조건 비교', '반복 검사']
+            },
+            {
+              text: '        yield a',
+              tag: '값 생성 yield',
+              desc: 'return 키워드 대신 yield를 사용하여 상태를 메모리에 고정한 채 현재값 a를 생성해서 하나씩 공급합니다. 메모리 절약에 우수합니다.',
+              tags: ['yield 예약어', '지연 평가', '메모리 최적화']
+            },
+            {
+              text: '        a, b = b, a + b',
+              tag: '다중 연산 및 이동',
+              desc: 'a에는 다음 값 b를 넣고, b에는 a와 b의 합을 할당함으로써 두 튜플을 동시에 업데이트하여 피보나치 점화식을 반영합니다.',
+              tags: ['수열 대입', '수학 연산', '값 스왑']
+            }
+          ]
+        }
+      ]
+    };
+
+    // Mapping character types to virtual keyboard data-key IDs
+    const charToKeyMap = {
+      'q': 'KeyQ', 'w': 'KeyW', 'e': 'KeyE', 'r': 'KeyR', 't': 'KeyT', 'y': 'KeyY', 'u': 'KeyU', 'i': 'KeyI', 'o': 'KeyO', 'p': 'KeyP',
+      'a': 'KeyA', 's': 'KeyS', 'd': 'KeyD', 'f': 'KeyF', 'g': 'KeyG', 'h': 'KeyH', 'j': 'KeyJ', 'k': 'KeyK', 'l': 'KeyL',
+      'z': 'KeyZ', 'x': 'KeyX', 'c': 'KeyC', 'v': 'KeyV', 'b': 'KeyB', 'n': 'KeyN', 'm': 'KeyM',
+      '1': 'Digit1', '2': 'Digit2', '3': 'Digit3', '4': 'Digit4', '5': 'Digit5', '6': 'Digit6', '7': 'Digit7', '8': 'Digit8', '9': 'Digit9', '0': 'Digit0',
+      '-': 'Minus', '=': 'Equal', '`': 'Backquote', '~': 'Backquote',
+      '!': 'Digit1', '@': 'Digit2', '#': 'Digit3', '$': 'Digit4', '%': 'Digit5', '^': 'Digit6', '&': 'Digit7', '*': 'Digit8', '(': 'Digit9', ')': 'Digit0',
+      '_': 'Minus', '+': 'Equal',
+      '[': 'BracketLeft', ']': 'BracketRight', '\\': 'Backslash',
+      '{': 'BracketLeft', '}': 'BracketRight', '|': 'Backslash',
+      ';': 'Semicolon', '\'': 'Quote', ':': 'Semicolon', '"': 'Quote',
+      ',': 'Comma', '.': 'Period', '/': 'Slash',
+      '<': 'Comma', '>': 'Period', '?': 'Slash',
+      ' ': 'Space', '\n': 'Enter'
+    };
+
+    // State Variables
+    let currentDifficulty = 'intermediate';
+    let snippetIndex = 0;
+    let codeText = '';
+    let isStarted = false;
+    let isPaused = false;
+    let currentIndex = 0;
+    
+    // Timer Variables
+    let timerInterval = null;
+    let elapsedSeconds = 0;
+    let totalTimeLimit = 600; // 10 minutes default in Normal mode
+    let practiceMode = 'normal'; // 'normal', 'time', 'line', 'complete'
+    
+    // Performance Metrics Variables
+    let totalKeystrokes = 0;
+    let correctKeystrokes = 0;
+    let errorCount = 0;
+    let comboCount = 0;
+    let maxCombo = 0;
+    let indexToLineMap = [];
+    let lineStarts = []; // index boundaries of lines
+    
+    // Key Highlight Tracker
+    let prevHighlightedKey = null;
+    let prevShiftHighlighted = false;
+
+    // Tokenizer utility for Syntax Highlighting
+    function tokenizePython(code) {
+      const keywords = ['def', 'if', 'for', 'in', 'return'];
+      const builtins = ['range', 'int', 'sum', 'len', 'print'];
+      const booleans = ['True', 'False'];
+      
+      const charStyles = new Array(code.length).fill('text-slate-300'); // default code text
+      
+      // Pass 1: Match Strings
+      let inString = false;
+      let stringChar = '';
+      for (let i = 0; i < code.length; i++) {
+        if ((code[i] === '"' || code[i] === "'") && (i === 0 || code[i-1] !== '\\')) {
+          if (!inString) {
+            inString = true;
+            stringChar = code[i];
+            charStyles[i] = 'text-green-400';
+          } else if (code[i] === stringChar) {
+            inString = false;
+            charStyles[i] = 'text-green-400';
+          }
+          continue;
+        }
+        if (inString) {
+          charStyles[i] = 'text-green-400';
+        }
+      }
+      
+      // Pass 2: Match Words
+      const wordRegex = /[a-zA-Z_][a-zA-Z0-9_]*/g;
+      let match;
+      while ((match = wordRegex.exec(code)) !== null) {
+        const word = match[0];
+        const start = match.index;
+        const end = start + word.length;
+        
+        if (charStyles[start] === 'text-green-400') continue;
+        
+        let style = 'text-slate-300';
+        if (keywords.includes(word)) {
+          style = 'text-purple-400 font-semibold';
+        } else if (builtins.includes(word)) {
+          style = 'text-teal-400 font-medium';
+        } else if (booleans.includes(word)) {
+          style = word === 'True' ? 'text-emerald-400 font-semibold' : 'text-blue-400 font-semibold';
+        } else {
+          // Look ahead to check if it is a function call
+          let nextIdx = end;
+          while (nextIdx < code.length && (code[nextIdx] === ' ' || code[nextIdx] === '\t')) {
+            nextIdx++;
+          }
+          if (nextIdx < code.length && code[nextIdx] === '(') {
+            style = 'text-blue-400';
+          }
+        }
+        
+        for (let i = start; i < end; i++) {
+          charStyles[i] = style;
+        }
+      }
+      
+      // Pass 3: Match Numbers
+      const numRegex = /\b\d+(\.\d+)?\b/g;
+      while ((match = numRegex.exec(code)) !== null) {
+        const start = match.index;
+        const end = start + match[0].length;
+        if (charStyles[start] === 'text-green-400') continue;
+        for (let i = start; i < end; i++) {
+          charStyles[i] = 'text-amber-400';
+        }
+      }
+      
+      return charStyles;
+    }
+
+    // Initialize Snippet and render UI
+    function initSnippet() {
+      const activeList = snippets[currentDifficulty];
+      const snippet = activeList[snippetIndex];
+      codeText = snippet.code;
+      
+      const charStyles = tokenizePython(codeText);
+      
+      const numbersContainer = document.getElementById('line-numbers');
+      const codeContainer = document.getElementById('code-container');
+      
+      numbersContainer.innerHTML = '';
+      codeContainer.innerHTML = '';
+      indexToLineMap = [];
+      lineStarts = [0];
+      
+      const lines = codeText.split('\n');
+      let charIdx = 0;
+      
+      lines.forEach((line, lineIdx) => {
+        const lineNum = lineIdx + 1;
+        
+        // Add Line Number
+        const numDiv = document.createElement('div');
+        numDiv.className = 'line-num select-none leading-8';
+        numDiv.innerText = lineNum;
+        numbersContainer.appendChild(numDiv);
+        
+        // Add Code Line Div
+        const lineDiv = document.createElement('div');
+        lineDiv.className = `code-line flex flex-wrap leading-8 transition-opacity duration-300 line-${lineNum}`;
+        lineDiv.id = `line-${lineNum}`;
+        
+        // Render Characters
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          const span = document.createElement('span');
+          span.id = `char-${charIdx}`;
+          span.className = `char-span ${charStyles[charIdx]} opacity-[0.55] transition-all duration-100`;
+          
+          if (char === ' ') {
+            span.innerHTML = ' '; // Normal space inside pre-wrap
+          } else {
+            span.innerText = char;
+          }
+          
+          lineDiv.appendChild(span);
+          indexToLineMap[charIdx] = lineNum;
+          charIdx++;
+        }
+        
+        // Append Newline Indicator except for last line
+        if (lineIdx < lines.length - 1) {
+          const span = document.createElement('span');
+          span.id = `char-${charIdx}`;
+          span.className = 'char-span text-slate-600 opacity-40 font-sans ml-0.5';
+          span.innerHTML = '↵';
+          lineDiv.appendChild(span);
+          indexToLineMap[charIdx] = lineNum;
+          charIdx++;
+          lineStarts.push(charIdx);
+        }
+        
+        codeContainer.appendChild(lineDiv);
+      });
+      
+      // Reset State Counters
+      resetMetrics();
+      
+      // Set to first active index (auto skip first indentations if any, though unlikely on line 1)
+      currentIndex = 0;
+      updateCursor();
+      updateExplanationCard();
+      
+      if (practiceMode === 'line') {
+        applyLineModeFocus();
+      }
+    }
+
+    // Reset Session Stats
+    function resetMetrics() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      isStarted = false;
+      isPaused = false;
+      currentIndex = 0;
+      elapsedSeconds = 0;
+      
+      if (practiceMode === 'time') {
+        totalTimeLimit = 60; // 60 seconds for Time Attack
+      } else {
+        totalTimeLimit = 600; // 10 minutes counting down
+      }
+      
+      totalKeystrokes = 0;
+      correctKeystrokes = 0;
+      errorCount = 0;
+      comboCount = 0;
+      maxCombo = 0;
+      
+      document.getElementById('stat-time').innerText = practiceMode === 'time' ? '01:00' : '00:00';
+      document.getElementById('stat-accuracy').innerText = '100.0%';
+      document.getElementById('stat-wpm').innerText = '0';
+      document.getElementById('stat-cpm').innerText = '0';
+      document.getElementById('stat-combo').innerText = '0';
+      
+      document.getElementById('countdown-timer').innerText = formatTime(totalTimeLimit);
+      document.getElementById('goal-text').innerText = `이번 주 목표 0 / 300 WPM`;
+      document.getElementById('goal-progress').style.width = '0%';
+      
+      document.getElementById('pause-icon').setAttribute('data-lucide', 'pause');
+      document.getElementById('pause-text').innerText = '일시정지';
+      lucide.createIcons();
+      
+      document.getElementById('unfocused-overlay').style.display = 'flex';
+      document.getElementById('completion-modal').classList.add('hidden');
+    }
+
+    // Toggle Focus Overlay
+    document.getElementById('unfocused-overlay').addEventListener('click', () => {
+      document.getElementById('unfocused-overlay').style.display = 'none';
+      if (!isStarted) {
+        startTimer();
+      }
+    });
+
+    // Start Practice Timer
+    function startTimer() {
+      isStarted = true;
+      elapsedSeconds = 0;
+      
+      timerInterval = setInterval(() => {
+        if (isPaused) return;
+        
+        elapsedSeconds++;
+        
+        let displaySec = elapsedSeconds;
+        let countdownSec = totalTimeLimit - elapsedSeconds;
+        
+        if (practiceMode === 'time') {
+          displaySec = elapsedSeconds;
+          // Time Attack ends when countdown reaches 0
+          if (countdownSec <= 0) {
+            countdownSec = 0;
+            clearInterval(timerInterval);
+            completeSession();
+          }
+        } else {
+          // Normal modes count up in stat-time, count down in countdown-timer
+          if (countdownSec <= 0) {
+            countdownSec = 0;
+            clearInterval(timerInterval);
+            completeSession();
+          }
+        }
+        
+        document.getElementById('stat-time').innerText = formatTime(practiceMode === 'time' ? countdownSec : displaySec);
+        document.getElementById('countdown-timer').innerText = formatTime(countdownSec);
+        
+        // Calculate WPM & CPM
+        const minutes = elapsedSeconds / 60;
+        if (minutes > 0) {
+          const wpm = Math.round((correctKeystrokes / 5) / minutes);
+          const cpm = Math.round(correctKeystrokes / minutes);
+          
+          document.getElementById('stat-wpm').innerText = wpm;
+          document.getElementById('stat-cpm').innerText = cpm;
+          
+          // Goal Progress update (goal target is 300 WPM)
+          document.getElementById('goal-text').innerText = `이번 주 목표 ${wpm} / 300 WPM`;
+          const goalPercentage = Math.min(100, Math.round((wpm / 300) * 100));
+          document.getElementById('goal-progress').style.width = `${goalPercentage}%`;
+        }
+      }, 1000);
+    }
+
+    // Format Time utility
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Toggle Pause/Resume
+    function togglePause() {
+      if (!isStarted) return;
+      isPaused = !isPaused;
+      
+      const icon = document.getElementById('pause-icon');
+      const text = document.getElementById('pause-text');
+      const overlay = document.getElementById('unfocused-overlay');
+      
+      if (isPaused) {
+        icon.setAttribute('data-lucide', 'play');
+        text.innerText = '계속하기';
+        overlay.style.display = 'flex';
+        overlay.querySelector('p').innerText = '연습이 일시 정지되었습니다';
+        overlay.querySelector('.text-slate-500').innerText = '클릭하여 타자연습을 계속 이어가세요';
+      } else {
+        icon.setAttribute('data-lucide', 'pause');
+        text.innerText = '일시정지';
+        overlay.style.display = 'none';
+      }
+      lucide.createIcons();
+    }
+
+    // Move Block Cursor
+    function updateCursor() {
+      // Remove previous active classes
+      const activeElements = document.querySelectorAll('.active-char');
+      activeElements.forEach(el => el.classList.remove('active-char'));
+      
+      if (currentIndex >= codeText.length) return;
+      
+      const activeSpan = document.getElementById(`char-${currentIndex}`);
+      if (activeSpan) {
+        activeSpan.classList.add('active-char');
+        
+        // Scroll editor if necessary to keep cursor in view
+        const editor = document.getElementById('code-container');
+        const offsetTop = activeSpan.offsetTop;
+        const containerHeight = editor.clientHeight;
+        
+        if (offsetTop > editor.scrollTop + containerHeight - 60) {
+          editor.scrollTo({ top: offsetTop - containerHeight + 80, behavior: 'smooth' });
+        } else if (offsetTop < editor.scrollTop + 20) {
+          editor.scrollTo({ top: offsetTop - 40, behavior: 'smooth' });
+        }
+      }
+      
+      // Update virtual keyboard highlight
+      highlightNextKey();
+    }
+
+    // Advanced: Highlight QWERTY key matching the expected character
+    function highlightNextKey() {
+      // Clear previous key highlights
+      if (prevHighlightedKey) {
+        const prevKeyEl = document.querySelector(`.key[data-key="${prevHighlightedKey}"]`);
+        if (prevKeyEl) {
+          prevKeyEl.classList.remove('bg-emerald-400', 'text-slate-950', 'font-bold', 'border-emerald-300', 'shadow-[0_0_12px_rgba(52,211,153,0.4)]');
+          prevKeyEl.classList.add('bg-slate-800/40', 'text-slate-400');
+        }
+      }
+      if (prevShiftHighlighted) {
+        const leftShift = document.querySelector('.key[data-key="ShiftLeft"]');
+        const rightShift = document.querySelector('.key[data-key="ShiftRight"]');
+        [leftShift, rightShift].forEach(el => {
+          if (el) {
+            el.classList.remove('bg-emerald-400', 'text-slate-950', 'font-bold', 'border-emerald-300');
+            el.classList.add('bg-slate-800', 'text-slate-300');
+          }
+        });
+      }
+      
+      if (currentIndex >= codeText.length || isPaused) return;
+      
+      const targetChar = codeText[currentIndex];
+      
+      // Identify key to highlight
+      let targetKey = charToKeyMap[targetChar.toLowerCase()];
+      let requireShift = false;
+      
+      // Check if it is an uppercase letter
+      if (targetChar >= 'A' && targetChar <= 'Z') {
+        targetKey = `Key${targetChar}`;
+        requireShift = true;
+      }
+      // Check other characters requiring shift key
+      if ('~!@#$%^&*()_+{}|:"<>?'.includes(targetChar)) {
+        requireShift = true;
+      }
+      
+      if (targetKey) {
+        const keyEl = document.querySelector(`.key[data-key="${targetKey}"]`);
+        if (keyEl) {
+          keyEl.classList.remove('bg-slate-800/40', 'text-slate-400');
+          keyEl.classList.add('bg-emerald-400', 'text-slate-950', 'font-bold', 'border-emerald-300', 'shadow-[0_0_12px_rgba(52,211,153,0.4)]');
+          prevHighlightedKey = targetKey;
+        }
+      }
+      
+      if (requireShift) {
+        // Highlight Right shift if keys are on the left, and vice versa (simulating natural touch typing)
+        let shiftKey = 'ShiftRight';
+        const leftHandKeys = 'qwertzasdfgvcxy12345';
+        if (leftHandKeys.includes(targetChar.toLowerCase())) {
+          shiftKey = 'ShiftRight';
+        } else {
+          shiftKey = 'ShiftLeft';
+        }
+        
+        const shiftEl = document.querySelector(`.key[data-key="${shiftKey}"]`);
+        if (shiftEl) {
+          shiftEl.classList.remove('bg-slate-800', 'text-slate-300');
+          shiftEl.classList.add('bg-emerald-400', 'text-slate-950', 'font-bold', 'border-emerald-300');
+          prevShiftHighlighted = true;
+        }
+      } else {
+        prevShiftHighlighted = false;
+      }
+    }
+
+    // Dynamic Updates for the right Explanation Panel
+    function updateExplanationCard() {
+      if (currentIndex >= codeText.length) return;
+      
+      const lineNum = indexToLineMap[currentIndex];
+      const activeList = snippets[currentDifficulty];
+      const snippet = activeList[snippetIndex];
+      const lineData = snippet.lineData[lineNum - 1];
+      
+      if (lineData) {
+        document.getElementById('explanation-code-preview').innerText = lineData.text;
+        document.getElementById('explanation-badge').innerText = lineData.tag;
+        document.getElementById('explanation-text').innerText = lineData.desc;
+        
+        const tagsContainer = document.getElementById('explanation-tags');
+        tagsContainer.innerHTML = '';
+        lineData.tags.forEach(t => {
+          const badge = document.createElement('span');
+          badge.className = 'bg-slate-800/40 border border-slate-700/30 text-slate-300 text-xs px-2.5 py-1 rounded-full';
+          badge.innerText = t;
+          tagsContainer.appendChild(badge);
+        });
+      }
+    }
+
+    // Set interactive styling for Line-by-Line mode focus
+    function applyLineModeFocus() {
+      const lineNum = indexToLineMap[currentIndex];
+      const linesCount = codeText.split('\n').length;
+      
+      for (let l = 1; l <= linesCount; l++) {
+        const lineEl = document.getElementById(`line-${l}`);
+        if (lineEl) {
+          if (l === lineNum) {
+            lineEl.style.opacity = '1';
+            lineEl.style.filter = 'none';
+          } else {
+            lineEl.style.opacity = '0.12';
+            lineEl.style.filter = 'blur(1px)';
+          }
+        }
+      }
+    }
+
+    // Process typing movement and skip leading indent spaces on linebreaks
+    function advanceCursor() {
+      currentIndex++;
+      
+      if (currentIndex >= codeText.length) {
+        completeSession();
+        return;
+      }
+      
+      // Convenience: Auto skip indentation spaces
+      if (codeText[currentIndex] === ' ') {
+        let isLeading = true;
+        let lineStart = currentIndex;
+        while (lineStart > 0 && codeText[lineStart - 1] !== '\n') {
+          lineStart--;
+        }
+        for (let i = lineStart; i <= currentIndex; i++) {
+          if (codeText[i] !== ' ') {
+            isLeading = false;
+            break;
+          }
+        }
+        
+        if (isLeading) {
+          // Instantly mark skipped indentation space as typed correct
+          const spaceSpan = document.getElementById(`char-${currentIndex}`);
+          if (spaceSpan) {
+            spaceSpan.className = 'char-span text-slate-400 opacity-100';
+          }
+          advanceCursor();
+          return;
+        }
+      }
+      
+      updateCursor();
+      updateExplanationCard();
+      
+      if (practiceMode === 'line') {
+        applyLineModeFocus();
+      }
+    }
+
+    // Reverse typing movement on backspace
+    function regressCursor() {
+      if (currentIndex === 0) return;
+      
+      currentIndex--;
+      unmarkChar(currentIndex);
+      
+      // Keep backing up if the previous characters were automatically skipped indentation spaces
+      while (currentIndex > 0 && codeText[currentIndex] === ' ') {
+        let isLeading = true;
+        let lineStart = currentIndex;
+        while (lineStart > 0 && codeText[lineStart - 1] !== '\n') {
+          lineStart--;
+        }
+        for (let i = lineStart; i <= currentIndex; i++) {
+          if (codeText[i] !== ' ') {
+            isLeading = false;
+            break;
+          }
+        }
+        
+        if (isLeading) {
+          unmarkChar(currentIndex);
+          currentIndex--;
+        } else {
+          break;
+        }
+      }
+      
+      updateCursor();
+      updateExplanationCard();
+      
+      if (practiceMode === 'line') {
+        applyLineModeFocus();
+      }
+    }
+
+    function unmarkChar(idx) {
+      const span = document.getElementById(`char-${idx}`);
+      if (span) {
+        span.classList.remove('bg-rose-950/40', 'text-rose-400', 'border-b', 'border-rose-500', 'text-slate-100', 'font-medium');
+        span.classList.add('opacity-[0.55]');
+      }
+    }
+
+    // Event listener for user real keyboard press
+    window.addEventListener('keydown', (e) => {
+      // Exclude forms/dropdowns triggers
+      if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT' || document.activeElement.tagName === 'BUTTON') return;
+      
+      if (!isStarted || isPaused) {
+        // If click overlay is showing, any normal keypress focuses and starts too
+        if (document.getElementById('unfocused-overlay').style.display !== 'none' && !isPaused) {
+          document.getElementById('unfocused-overlay').style.display = 'none';
+          startTimer();
+        } else {
+          return;
+        }
+      }
+
+      // Handle custom event keys
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        regressCursor();
+        return;
+      }
+      
+      if (e.key === 'Tab') {
+        e.preventDefault(); // prevent losing focus
+        return;
+      }
+      
+      if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault(); // prevent document scrolling
+      }
+
+      // Filter non-characters inputs (Alt, Control, Shift, etc.)
+      if (e.key.length > 1 && e.key !== 'Enter') return;
+      
+      totalKeystrokes++;
+      
+      // Determine what character was expected
+      const expectedChar = codeText[currentIndex];
+      let inputChar = e.key;
+      if (e.key === 'Enter') inputChar = '\n';
+      
+      const span = document.getElementById(`char-${currentIndex}`);
+      
+      if (inputChar === expectedChar) {
+        // Correct Keystroke
+        correctKeystrokes++;
+        comboCount++;
+        if (comboCount > maxCombo) maxCombo = comboCount;
+        
+        if (span) {
+          span.classList.remove('opacity-[0.55]');
+          span.classList.add('text-slate-100', 'font-medium');
+        }
+        
+        document.getElementById('stat-combo').innerText = comboCount;
+        
+        // Progress WPM/CPM instantly for responsive feel
+        const minutes = Math.max(1, elapsedSeconds) / 60;
+        const wpm = Math.round((correctKeystrokes / 5) / minutes);
+        document.getElementById('stat-wpm').innerText = wpm;
+        
+        advanceCursor();
+      } else {
+        // Incorrect Keystroke
+        errorCount++;
+        comboCount = 0;
+        document.getElementById('stat-combo').innerText = 0;
+        
+        if (span) {
+          span.classList.remove('opacity-[0.55]');
+          span.classList.add('bg-rose-950/40', 'text-rose-400', 'border-b', 'border-rose-500');
+          
+          // Subtle shake animation on typing error
+          span.animate([
+            { transform: 'translateX(0px)' },
+            { transform: 'translateX(-2px)' },
+            { transform: 'translateX(2px)' },
+            { transform: 'translateX(0px)' }
+          ], { duration: 150 });
+        }
+        
+        // Also advance on errors in code typing tests so typing doesn't lock up completely
+        advanceCursor();
+      }
+      
+      // Update accuracy
+      const acc = Math.max(0, Math.min(100, ((correctKeystrokes / totalKeystrokes) * 100)));
+      document.getElementById('stat-accuracy').innerText = `${acc.toFixed(1)}%`;
+      
+      // Simulate visual click feedback on virtual keyboard
+      simulateKeyPressFeedback(e);
+    });
+
+    // Simulate keycap press animation
+    function simulateKeyPressFeedback(e) {
+      let code = e.code;
+      
+      // Handle physical layout mismatches
+      if (e.key === 'Control') code = 'ControlLeft';
+      if (e.key === 'Alt') code = 'AltLeft';
+      if (e.key === 'Shift') code = e.location === 1 ? 'ShiftLeft' : 'ShiftRight';
+      
+      const keycap = document.querySelector(`.key[data-key="${code}"]`);
+      if (keycap) {
+        keycap.classList.add('bg-slate-700', 'border-slate-500', 'scale-[0.96]');
+        setTimeout(() => {
+          keycap.classList.remove('bg-slate-700', 'border-slate-500', 'scale-[0.96]');
+        }, 120);
+      }
+    }
+
+    // Complete Session Modal show
+    function completeSession() {
+      if (timerInterval) clearInterval(timerInterval);
+      
+      const finalSec = Math.max(1, elapsedSeconds);
+      const minutes = finalSec / 60;
+      const wpm = Math.round((correctKeystrokes / 5) / minutes);
+      const cpm = Math.round(correctKeystrokes / minutes);
+      const acc = totalKeystrokes > 0 ? ((correctKeystrokes / totalKeystrokes) * 100) : 100;
+      
+      // Populate Modal values
+      document.getElementById('modal-time').innerText = formatTime(finalSec);
+      document.getElementById('modal-wpm').innerText = `${wpm} WPM`;
+      document.getElementById('modal-accuracy').innerText = `${acc.toFixed(1)}%`;
+      document.getElementById('modal-cpm').innerText = `${cpm} 타`;
+      
+      document.getElementById('completion-modal').classList.remove('hidden');
+    }
+
+    // Restart Session handler
+    function restartSession() {
+      document.getElementById('completion-modal').classList.add('hidden');
+      initSnippet();
+    }
+
+    // Next Snippet handler
+    function loadNextSnippet() {
+      const list = snippets[currentDifficulty];
+      snippetIndex = (snippetIndex + 1) % list.length;
+      
+      document.getElementById('completion-modal').classList.add('hidden');
+      initSnippet();
+    }
+
+    // Difficulty selection drop handler
+    function selectDifficulty(diff) {
+      currentDifficulty = diff;
+      snippetIndex = 0;
+      
+      const labels = {
+        'beginner': '초급자',
+        'intermediate': '중급자',
+        'advanced': '상급자'
+      };
+      
+      document.getElementById('current-difficulty-text').innerText = labels[diff];
+      document.getElementById('breadcrumb-difficulty').innerText = labels[diff];
+      document.getElementById('difficulty-dropdown').classList.add('hidden');
+      
+      initSnippet();
+    }
+
+    // Set Interactive Practice Mode
+    function setPracticeMode(mode) {
+      practiceMode = mode;
+      
+      // Update Menu selectors styling
+      const modes = ['normal', 'time', 'line', 'complete'];
+      modes.forEach(m => {
+        const btn = document.getElementById(`mode-${m}`);
+        const dot = document.getElementById(`mode-dot-${m}`);
+        
+        if (m === mode) {
+          btn.className = 'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-150 text-white font-medium bg-slate-800/40';
+          dot.setAttribute('data-lucide', 'circle-dot');
+          dot.classList.remove('text-slate-500');
+          dot.classList.add('text-emerald-400');
+        } else {
+          btn.className = 'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-150 text-slate-400 hover:text-slate-200';
+          dot.setAttribute('data-lucide', 'circle');
+          dot.classList.remove('text-emerald-400');
+          dot.classList.add('text-slate-500');
+        }
+      });
+      
+      const labels = {
+        'normal': '일반 모드',
+        'time': '타임어택',
+        'line': '한 줄 모드',
+        'complete': '코드 완성'
+      };
+      document.getElementById('breadcrumb-mode').innerText = labels[mode];
+      
+      lucide.createIcons();
+      initSnippet();
+    }
+
+    // Close right panel helper
+    function closeExplanationPanel() {
+      document.getElementById('explanation-panel').classList.add('hidden');
+      // Expand coding typing workspace to span full 3 columns
+      document.getElementById('explanation-panel').previousElementSibling.classList.replace('col-span-2', 'col-span-3');
+    }
+
+    // Difficulty Dropdown click listener
+    document.getElementById('difficulty-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('difficulty-dropdown').classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', () => {
+      document.getElementById('difficulty-dropdown').classList.add('hidden');
+    });
+
+    // Dark/Light Theme toggler implementation
+    document.getElementById('theme-toggle').addEventListener('change', (e) => {
+      if (e.target.checked) {
+        document.body.classList.remove('light-theme');
+      } else {
+        document.body.classList.add('light-theme');
+      }
+    });
+
+    // On Load Startup
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      initSnippet();
+    });
+  </script>
+</body>
+</html>
