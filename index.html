@@ -111,6 +111,23 @@
       backdrop-filter: blur(4px);
       transition: all 0.3s ease;
     }
+    
+    /* Responsively set key height and hands to fit screen height */
+    .key {
+      height: 2.25rem !important; /* ~36px */
+      font-size: 0.75rem !important;
+    }
+    .keyboard-svg-hands {
+      height: 9rem !important; /* ~144px */
+    }
+    @media (min-height: 800px) {
+      .key {
+        height: 2.75rem !important; /* ~44px (standard h-11) */
+      }
+      .keyboard-svg-hands {
+        height: 12rem !important; /* ~192px (standard h-48) */
+      }
+    }
   </style>
 </head>
 <body class="bg-themePage text-themeTextMain min-h-screen flex font-sans overflow-hidden transition-colors duration-300">
@@ -199,10 +216,10 @@
   </aside>
 
   <!-- ================= MAIN CONTENT CONTAINER ================= -->
-  <main class="flex-1 flex flex-col p-8 overflow-y-auto relative">
+  <main class="flex-1 flex flex-col p-4 md:p-5 gap-3 md:gap-4 overflow-hidden relative min-h-0">
     
     <!-- Top Header -->
-    <header class="flex justify-between items-center mb-6 select-none">
+    <header class="flex justify-between items-center select-none">
       <div class="flex items-center gap-2 text-sm text-slate-400 font-medium">
         <span class="hover:text-slate-200 cursor-pointer">연습하기</span>
         <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600"></i>
@@ -243,7 +260,7 @@
     </header>
 
     <!-- Top Dashboard Stats -->
-    <section class="grid grid-cols-5 gap-4 mb-6 select-none">
+    <section class="grid grid-cols-5 gap-4 select-none">
       <!-- Time Stat -->
       <div class="bg-themeCard border border-themeBorder rounded-2xl p-4 flex flex-col justify-between shadow-lg relative overflow-hidden">
         <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">시간</span>
@@ -287,10 +304,10 @@
     </section>
 
     <!-- ================= MIDDLE WORKSPACE (EDITOR & EXPLANATION) ================= -->
-    <section class="grid grid-cols-3 gap-6 mb-6">
+    <section class="grid grid-cols-3 gap-5 flex-1 min-h-0">
       
       <!-- Left Panel: Typing Area -->
-      <div class="col-span-2 bg-themeCard border border-themeBorder rounded-2xl p-6 shadow-lg relative min-h-[340px] flex">
+      <div class="col-span-2 bg-themeCard border border-themeBorder rounded-2xl p-5 shadow-lg relative flex flex-col justify-between min-h-0">
         
         <!-- Unfocused Focus Overlay -->
         <div id="unfocused-overlay" class="absolute inset-0 bg-slate-950/80 unfocused-overlay rounded-2xl z-20 flex flex-col items-center justify-center cursor-pointer select-none">
@@ -300,7 +317,7 @@
         </div>
 
         <!-- Progress Bar Header -->
-        <div class="w-full flex justify-between items-center mb-4 pb-3 border-b border-themeBorder/30 select-none text-sm absolute top-0 left-0 px-6 pt-4 bg-themeCard rounded-t-2xl z-10">
+        <div class="w-full flex justify-between items-center mb-4 pb-3 border-b border-themeBorder/30 select-none text-sm absolute top-0 left-0 px-5 pt-4 bg-themeCard rounded-t-2xl z-10">
           <div class="flex items-center">
             <span class="text-slate-500 font-bold text-xs tracking-wider">진행률</span>
             <div class="w-28 bg-slate-950 border border-themeBorder h-2 rounded-full overflow-hidden ml-3 relative inline-block">
@@ -310,21 +327,21 @@
           <span id="snippet-progress-text" class="text-slate-500 text-xs font-semibold">1 / 4 라인</span>
         </div>
 
-        <div class="w-full flex flex-col font-mono relative text-[15px] select-none pt-8">
+        <div class="w-full flex flex-col font-mono relative text-[15px] select-none pt-8 flex-1 min-h-0 justify-center">
           <!-- Code Lines Container (Unified line wrappers will be injected here) -->
-          <div id="code-editor-container" class="w-full flex flex-col gap-2.5 overflow-y-auto pr-1" style="max-height: 240px;">
+          <div id="code-editor-container" class="w-full flex flex-col gap-2.5 overflow-y-auto pr-1 flex-1 min-h-0" style="max-height: 180px;">
             <!-- Dynamically populated rows with line-number + character-spans -->
           </div>
         </div>
       </div>
 
       <!-- Right Panel: Info Panel -->
-      <div id="explanation-panel" class="bg-themeCard border border-themeBorder rounded-2xl p-6 shadow-lg flex flex-col justify-between select-none relative min-h-[340px]">
+      <div id="explanation-panel" class="bg-themeCard border border-themeBorder rounded-2xl p-5 shadow-lg flex flex-col justify-between select-none relative min-h-0">
         <button onclick="closeExplanationPanel()" class="absolute top-4 right-4 text-slate-500 hover:text-slate-300 transition-colors">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
 
-        <div class="space-y-4 overflow-y-auto pr-1 flex-grow mb-4 max-h-[300px]">
+        <div class="space-y-4 overflow-y-auto pr-1 flex-grow mb-3 max-h-[220px]">
           <div class="flex justify-between items-center">
             <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider">지금 치는 코드</h2>
             <button onclick="alert('전체 코드 상세 설명 페이지로 이동합니다 (데모)');" class="bg-slate-800 border border-slate-700/50 text-slate-300 hover:border-emerald-500/40 hover:text-emerald-400 text-[10px] font-semibold px-2 py-0.5 rounded-lg transition-colors flex items-center gap-0.5 cursor-pointer">
@@ -378,18 +395,18 @@ print(fruits[0])  # apple</pre>
     </section>
 
     <!-- ================= BOTTOM PANEL (VIRTUAL KEYBOARD) ================= -->
-    <section class="bg-themeCard border border-themeBorder rounded-2xl p-5 shadow-lg relative mb-6 shrink-0 select-none">
+    <section class="bg-themeCard border border-themeBorder rounded-2xl p-4 shadow-md relative shrink-0 select-none">
       
       <!-- SVG hands outline layer -->
       <div class="absolute inset-x-0 bottom-0 pointer-events-none flex justify-center items-end opacity-[0.25] z-10 select-none">
-        <svg class="w-[85%] h-48 text-slate-400" viewBox="0 0 800 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="w-[85%] keyboard-svg-hands text-slate-400" viewBox="0 0 800 220" fill="none" xmlns="http://www.w3.org/2000/svg">
           <!-- Left Hand -->
           <g id="left-hand" class="transition-all duration-100 ease-out origin-bottom-left">
-            <path d="M 180,220 C 180,180 175,140 160,120 C 155,110 155,70 162,70 C 169,70 170,110 175,120 C 172,105 172,50 180,50 C 188,50 188,105 192,115 C 190,95 192,30 201,30 C 210,30 208,95 212,110 C 210,95 215,40 224,40 C 233,40 228,100 235,120 C 240,135 250,145 260,155 C 272,160 290,170 298,180 C 304,190 290,200 275,190 C 255,175 245,195 240,220" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.08"/>
+            <path d="M 170,220 C 165,180 160,150 160,120 C 160,100 162,70 170,70 C 174,70 177,75 178,85 C 178,100 178,115 178,122 C 178,100 180,50 188,50 C 192,50 195,55 196,65 C 196,80 196,110 196,120 C 196,100 198,35 207,35 C 211,35 214,40 216,50 C 216,70 216,110 216,122 C 216,100 218,50 226,50 C 230,50 234,55 236,65 C 236,85 236,120 236,145 C 242,150 255,142 275,130 C 282,126 286,134 280,144 C 272,155 260,172 250,220" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.08"/>
           </g>
           <!-- Right Hand -->
           <g id="right-hand" class="transition-all duration-100 ease-out origin-bottom-right">
-            <path d="M 620,220 C 620,180 625,140 640,120 C 645,110 645,70 638,70 C 631,70 630,110 625,120 C 628,105 628,50 620,50 C 612,50 612,105 608,115 C 610,95 608,30 599,30 C 590,30 592,95 588,110 C 590,95 585,40 576,40 C 567,40 572,100 565,120 C 560,135 550,145 540,155 C 528,160 510,170 502,180 C 496,190 510,200 525,190 C 545,175 555,195 560,220" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.08"/>
+            <path d="M 630,220 C 635,180 640,150 640,120 C 640,100 638,70 630,70 C 626,70 623,75 622,85 C 622,100 622,115 622,122 C 622,100 620,50 612,50 C 608,50 605,55 604,65 C 604,80 604,110 604,120 C 604,100 602,35 593,35 C 589,35 586,40 584,50 C 584,70 584,110 584,122 C 584,100 582,50 574,50 C 570,50 566,55 564,65 C 564,85 564,120 564,145 C 558,150 545,142 525,130 C 518,126 514,134 520,144 C 528,155 540,172 550,220" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.08"/>
           </g>
         </svg>
       </div>
