@@ -733,10 +733,70 @@ print(fruits[0])  # apple</pre>
               desc: '총합(total)을 리스트의 개수(len)로 나누어 평균값을 연산합니다. / 기호는 실수 나눗셈 연산자입니다.',
               whatIsCode: ['평균 수치 도출', '요소의 개수(len)를 조회하여 나눔으로써 전체 집단의 수리학적 평균치를 획득합니다.'],
               howToUse: {
-                example: 'arr = [10, 20]\navg = sum(arr) / len(arr)  # 15.0',
-                desc: 'len() 내장함수로 원소의 크기를 동적으로 구하므로, 요소가 추가되어도 정상 평균이 산출됩니다.'
+                example: 'scores = [90, 80, 100]\ntotal_score = sum(scores)  # 270',
+                desc: '반복문(for)을 사용해 변수에 합계를 누적할 필요 없이 단 한 줄의 함수 호출로 처리합니다.'
               },
-              tags: ['평균 계산', '길이 조회', '실수 나눗셈']
+              tags: ['합계 계산', '내장함수', '수학 연산']
+            },
+            {
+              code: 'age_str = "25"\nage = int(age_str)\nnext_year = age + 1\nprint(f"Next year: {next_year}")',
+              summary: {
+                desc: "문자열 데이터를 정수형으로 형 변환(Type Casting)하고 사칙 연산 후 출력하는 실습입니다.",
+                why: "파이썬의 `input()` 함수나 텍스트 데이터는 항상 문자열(str)로 입력되므로, 산술 연산을 처리하려면 `int()`나 `float()`로 자료형을 변환해야 하기 때문입니다.",
+                when: "사용자로부터 입력받은 나이, 금액, 수량 등을 이용해 수학적 연산이나 조건 비교를 수행하고자 할 때 사용합니다."
+              },
+              quiz: {
+                question: "만약 `age_str = 'thirty'`일 때 `int(age_str)`를 호출하면 파이썬 프로그램은 어떻게 될까요?",
+                options: ["정수 30으로 정상 변환된다.", "오류(ValueError)가 발생한다.", "문자열 'thirty' 그대로 유지된다.", "0이 반환된다."],
+                answerIndex: 1,
+                explanation: "숫자로만 구성되지 않은 일반 텍스트 문자열은 정수형으로 형 변환할 수 없으므로 `ValueError` 에러가 발생합니다."
+              },
+              lineData: [
+                {
+                  text: 'age_str = "25"',
+                  tag: '문자열 변수',
+                  desc: '문자열 "25"를 age_str 변수에 대입합니다.',
+                  whatIsCode: ['문자열 대입', '텍스트 형식의 숫자 "25"를 임시 보관하기 위해 변수에 할당합니다.'],
+                  howToUse: {
+                    example: 'num_text = "100"',
+                    desc: '따옴표 안에 적힌 숫자는 컴퓨터가 수치가 아닌 문자로 인식합니다.'
+                  },
+                  tags: ['자료형 str', '변수 선언']
+                },
+                {
+                  text: 'age = int(age_str)',
+                  tag: '형 변환',
+                  desc: '내장함수 int()를 사용해 문자열 "25"를 정수형(int) 데이터 25로 변환하여 age 변수에 담습니다.',
+                  whatIsCode: ['형 변환(Type Casting)', '문자열 형태의 자료를 수학 연산이 가능한 정수형 데이터로 타입을 변환합니다.'],
+                  howToUse: {
+                    example: 'price = int("5000")',
+                    desc: 'int() 내부에 숫자로 표현된 문자열을 전달하면 정수로 컴파일됩니다.'
+                  },
+                  tags: ['자료형 변환', '내장함수 int']
+                },
+                {
+                  text: 'next_year = age + 1',
+                  tag: '산술 연산',
+                  desc: '정수형 변수 age에 1을 더해 내년 나이를 구합니다. 형 변환 덕분에 오류 없이 덧셈 연산이 수행됩니다.',
+                  whatIsCode: ['정수형 덧셈 연산', '메모리에 정수로 저장된 두 값을 산술 연산자(+)를 이용해 계산합니다.'],
+                  howToUse: {
+                    example: 'sum_val = val1 + val2',
+                    desc: '피연산자들이 모두 숫자형(int, float)이어야 대수적인 덧셈이 이루어집니다.'
+                  },
+                  tags: ['더하기 연산', '변수 업데이트']
+                },
+                {
+                  text: 'print(f"Next year: {next_year}")',
+                  tag: 'f-string 출력',
+                  desc: '내년 나이인 next_year 변수값을 f-string 포맷에 치환 결합하여 화면에 출력합니다.',
+                  whatIsCode: ['결과값 화면 출력', '계산 결과를 포함한 문자열 템플릿을 생성하여 콘솔 화면에 뿌려줍니다.'],
+                  howToUse: {
+                    example: 'print(f"결과: {result}")',
+                    desc: '문자열 f 지시어 뒤에 변수를 중괄호 {}에 기입하여 출력 포맷을 일체화합니다.'
+                  },
+                  tags: ['콘솔 출력', '포맷팅']
+                }
+              ]
             }
           ]
         }
@@ -870,6 +930,121 @@ print(fruits[0])  # apple</pre>
                 desc: 'for문 오른쪽에 if 키워드를 붙여 원소의 순회 중 조건이 참인 대상만 리스트 요소로 수집하게 필터를 겁니다.'
               },
               tags: ['리스트', '값 필터링', '인라인 루프']
+            }
+          ]
+        },
+        {
+          code: 'height = 1.75\nweight = 70.0\nbmi = weight / (height ** 2)\nif bmi < 18.5:\n    state = "저체중"\nelif bmi < 23:\n    state = "정상"\nelse:\n    state = "과체중"',
+          summary: {
+            desc: "신장과 체중을 입력받아 BMI 지수를 계산하고 판별하는 조건 분기형 예제입니다.",
+            why: "현업이나 실생활 알고리즘에서 어떤 수치 구간에 따라 실행 흐름을 여러 단계(if-elif-else)로 분기하는 로직을 학습하기 위해 사용합니다.",
+            when: "성적 분류(A/B/C), 배송비 책정(무게별 구간), 센서 데이터 임계치 판단 등 등급 분류 조건식이 필요할 때 씁니다."
+          },
+          quiz: {
+            question: "만약 `height = 2.0`, `weight = 80.0`인 사람의 BMI 지수를 연산하면 `state` 변수에는 어떤 문자열이 담길까요?",
+            options: ["저체중", "정상", "과체중", "비만"],
+            answerIndex: 1,
+            explanation: "BMI = `80.0 / (2.0 ** 2)` = `80.0 / 4.0` = `20.0` 입니다. `20.0`은 `18.5 <= bmi < 23` 조건 범위에 들기 때문에 '정상'이 됩니다."
+          },
+          lineData: [
+            {
+              text: 'height = 1.75',
+              tag: '실수 변수',
+              desc: '신장(m)을 실수형 값 1.75로 height 변수에 저장합니다.',
+              whatIsCode: ['실수 데이터 선언', '미터 단위의 신장 정보를 메모리에 저장합니다.'],
+              howToUse: {
+                example: 'h = 1.82',
+                desc: '실수형 변수는 소수점 이하의 세분화된 측정치를 정밀 보관할 때 유용합니다.'
+              },
+              tags: ['변수 정의', '자료형 float']
+            },
+            {
+              text: 'weight = 70.0',
+              tag: '실수 변수',
+              desc: '체중(kg)을 실수형 값 70.0으로 weight 변수에 저장합니다.',
+              whatIsCode: ['체중 데이터 선언', '킬로그램 단위의 체중을 실수형 데이터로 초기 바인딩합니다.'],
+              howToUse: {
+                example: 'w = 65.5',
+                desc: '소수점을 명시하여 실수(float) 데이터임을 나타냅니다.'
+              },
+              tags: ['변수 선언', '자료형 float']
+            },
+            {
+              text: 'bmi = weight / (height ** 2)',
+              tag: '산술 수식',
+              desc: 'BMI 공식(체중 / 신장의 제곱)에 맞춰 연산합니다. **는 제곱 연산자이고 /는 나눗셈 연산자입니다.',
+              whatIsCode: ['BMI 연산 수식', '사칙 연산자와 제곱 연산자를 결합하여 공식 수치를 계산해 냅니다.'],
+              howToUse: {
+                example: 'area = 3.14 * (radius ** 2)',
+                desc: '제곱 연산자(**)는 곱셈(*)보다 연산 우선순위가 높습니다.'
+              },
+              tags: ['제곱 연산자', '실수형 나눗셈']
+            },
+            {
+              text: 'if bmi < 18.5:',
+              tag: 'if 조건문',
+              desc: 'BMI 지수가 18.5 미만(저체중 구간)인지 체크합니다.',
+              whatIsCode: ['첫 번째 경계 검사', '가장 낮은 임계 조건을 최초 분기 처리하기 위한 구문입니다.'],
+              howToUse: {
+                example: 'if x < 0:',
+                desc: 'if 키워드 뒤에 조건 판별식을 적고, 콜론(:)으로 단락을 연출합니다.'
+              },
+              tags: ['비교 연산자', '조건 분기']
+            },
+            {
+              text: '    state = "저체중"',
+              tag: '문자열 대입',
+              desc: '위 조건이 참일 때 state 변수에 "저체중"을 저장합니다.',
+              whatIsCode: ['조건 실행문', 'if 조건 만족 시에 실행할 상태값 갱신 라인입니다.'],
+              howToUse: {
+                example: '    x = -x',
+                desc: '참일 때 실행할 문장들은 일정한 들여쓰기로 종속성을 나타냅니다.'
+              },
+              tags: ['변수 대입', '들여쓰기 블록']
+            },
+            {
+              text: 'elif bmi < 23:',
+              tag: 'elif 조건문',
+              desc: '이전 if 조건이 거짓일 때, BMI가 23 미만(정상 구간)인지 검사합니다.',
+              whatIsCode: ['다중 조건 분기', '이전 조건이 만족되지 않았을 때 후속 조건들을 순차적으로 검증하기 위해 사용합니다.'],
+              howToUse: {
+                example: 'elif x < 10:',
+                desc: 'elif는 if와 else 사이에서 원하는 만큼 다중 선언할 수 있습니다.'
+              },
+              tags: ['elif 구문', '추가 검사']
+            },
+            {
+              text: '    state = "정상"',
+              tag: '문자열 대입',
+              desc: 'elif 조건이 참일 때 state 변수에 "정상"을 대입합니다.',
+              whatIsCode: ['조건 실행문', 'elif 조건 만족 시 실행할 영역입니다.'],
+              howToUse: {
+                example: '    state = "normal"',
+                desc: '상태값이나 등급 식별 문자열을 대입 갱신합니다.'
+              },
+              tags: ['들여쓰기', '값 할당']
+            },
+            {
+              text: 'else:',
+              tag: 'else 예외',
+              desc: '앞선 모든 조건(18.5 미만, 23 미만)이 모두 거짓일 때 실행되는 예외 블록입니다.',
+              whatIsCode: ['나머지 예외 예외 처리', '어떤 조건식에도 해당되지 않는 나머지 모든 케이스를 포괄하는 수렴 구문입니다.'],
+              howToUse: {
+                example: 'else:',
+                desc: 'else는 조건식을 가질 수 없으며, 콜론(:)으로 단락을 개시합니다.'
+              },
+              tags: ['else 구문', '디폴트 분기']
+            },
+            {
+              text: '    state = "과체중"',
+              tag: '문자열 대입',
+              desc: '모든 조건이 거짓일 때(즉, 23 이상일 때) state에 "과체중"을 대입합니다.',
+              whatIsCode: ['디폴트 실행문', '조건 미부합 시 최종적으로 실행할 디폴트 동작 라인입니다.'],
+              howToUse: {
+                example: '    print("Error")',
+                desc: '예외 혹은 나머지 분류값을 매핑합니다.'
+              },
+              tags: ['값 갱신', '들여쓰기']
             }
           ]
         }
@@ -1014,6 +1189,77 @@ print(fruits[0])  # apple</pre>
                 desc: '오른쪽의 우변 연산(b, a + b)이 다 완료된 후 좌변 변수에 바인딩되므로 데이터가 오염되지 않습니다.'
               },
               tags: ['수열 대입', '수학 연산', '값 스왑']
+            }
+          ]
+        },
+        {
+          code: 'students = [["iron", 85], ["captain", 92], ["thor", 78]]\nscores = [s[1] for s in students]\nscores.sort(reverse=True)\ntop_score = scores[0]\nprint(f"Top score: {top_score}")',
+          summary: {
+            desc: "중첩 리스트(Nested List)와 리스트 컴프리헨션, 내장 메소드 정렬(sort)을 복합 활용한 예제입니다.",
+            why: "현업에서 데이터베이스 조회 결과나 JSON 데이터 형태인 다차원 배열에서 특정 속성값만 선택 추출하고 조건에 맞춰 정렬 연산하는 구조를 실습하기 위해 사용합니다.",
+            when: "다차원 성적표 데이터에서 원자 요소 추출 후 최고 성적자 정렬, 가맹점별 매출 리스트에서 상위 지점 순 정산 등 데이터를 2차 가공할 때 널리 응용합니다."
+          },
+          quiz: {
+            question: "만약 `scores.sort()`에 `reverse=True` 옵션을 주지 않고 호출한다면, `top_score = scores[0]` 결과값은 최종적으로 몇 점이 될까요?",
+            options: ["92", "85", "78", "에러 발생"],
+            answerIndex: 2,
+            explanation: "`reverse=True` 없이 `.sort()`만 호출하면 오름차순(기본값)으로 정렬되므로, 가장 낮은 점수인 `78`이 리스트의 첫 번째 원소(index 0)가 됩니다."
+          },
+          lineData: [
+            {
+              text: 'students = [["iron", 85], ["captain", 92], ["thor", 78]]',
+              tag: '중첩 리스트',
+              desc: '문자열(이름)과 정수(성적)를 쌍으로 가지는 2차원 중첩 리스트를 생성합니다.',
+              whatIsCode: ['다차원 배열 선언', '리스트 요소 내부에 또 다른 하위 리스트를 포함하는 복합 데이터 형태를 구성합니다.'],
+              howToUse: {
+                example: 'data = [[1, 2], [3, 4]]\nprint(data[0][1])  # 2',
+                desc: '각 묶음 원소의 인덱스 대괄호를 연속([i][j])으로 지정하여 내부 수치에 도달합니다.'
+              },
+              tags: ['중첩 리스트', '2차원 배열', '데이터 저장']
+            },
+            {
+              text: 'scores = [s[1] for s in students]',
+              tag: '리스트 컴프리헨션',
+              desc: 'students 리스트를 순회하며 각 하위 리스트의 1번 인덱스 원소(성적)만 추출하여 새로운 scores 리스트를 빌드합니다.',
+              whatIsCode: ['데이터 가공 추출', '반복 순회(for s in students)를 통해 특정 속성(s[1])만 발췌해 단일 리스트로 가공 축약합니다.'],
+              howToUse: {
+                example: 'names = [x[0] for x in students]',
+                desc: '구조화된 배열 데이터의 특정 컬럼값들만 일괄 추출하여 전처리할 때 매우 유용합니다.'
+              },
+              tags: ['리스트 컴프리헨션', '컬럼 추출']
+            },
+            {
+              text: 'scores.sort(reverse=True)',
+              tag: '정렬 메소드',
+              desc: 'sort() 메소드의 매개변수 reverse에 True를 지정하여 scores 리스트를 내림차순(큰 수 -> 작은 수)으로 정렬합니다.',
+              whatIsCode: ['내림차순 정렬 메소드', '기본값인 오름차순 정렬을 reverse 옵션 지정을 통해 거꾸로 뒤집어 정렬을 갱신합니다.'],
+              howToUse: {
+                example: 'nums = [1, 5, 3]\nnums.sort(reverse=True)  # [5, 3, 1]',
+                desc: '리스트의 원소 배열 순서를 인프라 메모리상에서 즉각 변조 정렬합니다.'
+              },
+              tags: ['sort 메소드', '내림차순', '매개변수']
+            },
+            {
+              text: 'top_score = scores[0]',
+              tag: '인덱스 접근',
+              desc: '내림차순 정렬이 끝났으므로 가장 큰 수치가 첫 번째에 위치합니다. 0번 인덱스 요소를 꺼내 top_score 변수에 담습니다.',
+              whatIsCode: ['인덱스 데이터 조회', '정렬이 완료된 데이터셋의 맨 앞(최고값) 원소를 인덱싱하여 변수에 바인딩합니다.'],
+              howToUse: {
+                example: 'first = arr[0]\nlast = arr[-1]',
+                desc: '인덱스는 0부터 양수로 세어가거나, -1을 써서 맨 뒷자리로 역추적할 수 있습니다.'
+              },
+              tags: ['0번 인덱스', '최고값 조회']
+            },
+            {
+              text: 'print(f"Top score: {top_score}")',
+              tag: 'f-string 출력',
+              desc: '최고 점수를 f-string 템플릿에 맞추어 콘솔에 최종 출력합니다.',
+              whatIsCode: ['결과 콘솔 출력', '동적으로 조회된 최고 점수 값을 문자열과 결합해 사용자에게 보고합니다.'],
+              howToUse: {
+                example: 'print(f"Max: {val}")',
+                desc: '가공 완료된 최종 산출 변수를 f-string과 결합해 정형 포맷으로 호출 출력합니다.'
+              },
+              tags: ['콘솔 출력', '결과 프린트']
             }
           ]
         }
