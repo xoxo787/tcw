@@ -508,40 +508,104 @@ print(fruits[0])  # apple</pre>
 
   <!-- ================= SUCCESS/COMPLETION MODAL ================= -->
   <div id="completion-modal" class="hidden fixed inset-0 bg-slate-950/85 backdrop-blur-md flex items-center justify-center z-50 p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl space-y-6 text-center select-none">
-      <div class="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto shadow-inner animate-bounce mb-2">
-        <i data-lucide="trophy" class="w-8 h-8"></i>
-      </div>
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-4xl w-full shadow-2xl space-y-6 md:space-y-0 grid grid-cols-1 md:grid-cols-12 gap-8 select-none max-h-[90vh] overflow-y-auto">
       
-      <div class="space-y-1.5">
-        <h3 class="text-2xl font-bold text-white tracking-tight">연습 완료!</h3>
-        <p class="text-slate-400 text-sm">파이썬 코드 타자 연습 세션을 완료했습니다.</p>
+      <!-- Left Column (Stats & Controls) - col-span-5 -->
+      <div class="md:col-span-5 flex flex-col justify-between space-y-6 text-center">
+        <div>
+          <div class="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto shadow-inner animate-bounce mb-4">
+            <i data-lucide="trophy" class="w-8 h-8"></i>
+          </div>
+          <div class="space-y-1.5">
+            <h3 class="text-2xl font-bold text-white tracking-tight">연습 완료!</h3>
+            <p class="text-slate-400 text-sm">파이썬 코드 타자 연습 세션을 완료했습니다.</p>
+          </div>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="grid grid-cols-2 gap-3 bg-slate-850 p-4 rounded-2xl border border-slate-800 text-left font-mono">
+          <div class="space-y-1">
+            <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">소요 시간</span>
+            <p id="modal-time" class="text-base font-bold text-white">01:23</p>
+          </div>
+          <div class="space-y-1">
+            <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">평균 타수</span>
+            <p id="modal-cpm" class="text-base font-bold text-emerald-400">430 타</p>
+          </div>
+          <div class="space-y-1 pt-2 border-t border-slate-800">
+            <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">최종 정확도</span>
+            <p id="modal-accuracy" class="text-base font-bold text-white">98.6%</p>
+          </div>
+          <div class="space-y-1 pt-2 border-t border-slate-800">
+            <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">최대 콤보</span>
+            <p id="modal-combo" class="text-base font-bold text-white">24 회</p>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex gap-3 pt-2">
+          <button onclick="restartSession()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3.5 rounded-xl border border-slate-700 active:scale-95 transition-all text-sm cursor-pointer">다시 도전</button>
+          <button onclick="loadNextSnippet()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3.5 rounded-xl active:scale-95 transition-all text-sm shadow-[0_0_15px_rgba(16,185,129,0.3)] cursor-pointer">다음 단계</button>
+        </div>
       </div>
 
-      <!-- Stats Summary -->
-      <div class="grid grid-cols-2 gap-3 bg-slate-850 p-4 rounded-2xl border border-slate-800 text-left font-mono">
-        <div class="space-y-1">
-          <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">소요 시간</span>
-          <p id="modal-time" class="text-base font-bold text-white">01:23</p>
+      <!-- Right Column (Learning Summary & Active Training Quiz) - col-span-7 -->
+      <div class="md:col-span-7 space-y-5 text-left flex flex-col justify-between">
+        
+        <!-- Learning Summary Block -->
+        <div class="bg-slate-950/40 border border-slate-800 rounded-2xl p-5 space-y-3 relative">
+          <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+            <span>코드 핵심 요약</span>
+          </h4>
+          
+          <div class="space-y-3 text-xs md:text-sm">
+            <div class="space-y-0.5">
+              <span class="text-[10px] text-slate-500 font-semibold">💡 코드 설명법</span>
+              <p id="modal-learn-desc" class="text-slate-300 leading-relaxed font-medium">소수(Prime Number)를 판별하는 함수형 알고리즘 코드입니다.</p>
+            </div>
+            <div class="space-y-0.5">
+              <span class="text-[10px] text-slate-500 font-semibold">❓ 왜 쓰나요?</span>
+              <p id="modal-learn-why" class="text-slate-300 leading-relaxed">특정 수가 1과 자기 자신 이외에 다른 나누어떨어지는 약수가 있는지 컴퓨터로 신속히 판별하기 위해 사용합니다.</p>
+            </div>
+            <div class="space-y-0.5">
+              <span class="text-[10px] text-slate-500 font-semibold">📅 언제 쓰나요?</span>
+              <p id="modal-learn-when" class="text-slate-300 leading-relaxed">알고리즘 문제 풀이, 암호학(RSA 암호화 키 생성), 또는 데이터 무결성 검증 루틴 등에서 자주 설계됩니다.</p>
+            </div>
+          </div>
         </div>
-        <div class="space-y-1">
-          <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">평균 타수</span>
-          <p id="modal-cpm" class="text-base font-bold text-emerald-400">430 타</p>
+
+        <!-- Application Quiz Block -->
+        <div class="bg-slate-950/40 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="award" class="w-3.5 h-3.5"></i>
+            <span>응용 실전 문제 🎯</span>
+          </h4>
+          
+          <div class="space-y-3">
+            <p id="modal-quiz-question" class="text-sm font-semibold text-white leading-relaxed">
+              만약 `is_prime(1)`을 호출하면 함수는 최종적으로 어떤 값을 반환할까요?
+            </p>
+            
+            <!-- Quiz Options Container -->
+            <div id="modal-quiz-options" class="grid grid-cols-2 gap-2 text-xs font-mono font-medium">
+              <!-- Rendered Dynamically -->
+            </div>
+            
+            <!-- Quiz Feedback Alert -->
+            <div id="modal-quiz-feedback" class="hidden rounded-xl p-3 text-xs leading-relaxed transition-all duration-200">
+              <div class="font-bold flex items-center gap-1 mb-1">
+                <!-- Lucide checks injected dynamically -->
+              </div>
+              <p id="modal-quiz-explanation">
+                1은 2보다 작으므로 첫 번째 if 경계 조건식에 부합하여 조기에 False를 반환합니다.
+              </p>
+            </div>
+          </div>
         </div>
-        <div class="space-y-1 pt-2 border-t border-slate-800">
-          <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">최종 정확도</span>
-          <p id="modal-accuracy" class="text-base font-bold text-white">98.6%</p>
-        </div>
-        <div class="space-y-1 pt-2 border-t border-slate-800">
-          <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">최대 콤보</span>
-          <p id="modal-combo" class="text-base font-bold text-white">24 회</p>
-        </div>
+
       </div>
 
-      <div class="flex gap-3 pt-2">
-        <button onclick="restartSession()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3.5 rounded-xl border border-slate-700 active:scale-95 transition-all text-sm">다시 도전</button>
-        <button onclick="loadNextSnippet()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3.5 rounded-xl active:scale-95 transition-all text-sm shadow-[0_0_15px_rgba(16,185,129,0.3)]">다음 단계</button>
-      </div>
     </div>
   </div>
 
@@ -552,6 +616,17 @@ print(fruits[0])  # apple</pre>
       beginner: [
         {
           code: 'name = "TypePy"\nage = 20\nprint(f"Welcome to {name}!")\nprint(f"Age is {age} years.")',
+          summary: {
+            desc: "변수(Variable) 선언 및 f-string 문자열 결합 포맷 출력법입니다.",
+            why: "텍스트나 숫자 등 데이터를 메모리 공간에 임시 저장하고, 프로그램 내에서 이 값을 가공하거나 변수 바인딩을 통해 간결하게 재사용하기 위해 사용합니다.",
+            when: "로그인 사용자 이름 보관, 프로그램 설정 정보 기록, 혹은 디버깅 로그를 문자열 포맷팅하여 콘솔 창에 깔끔하게 보여줄 때 사용합니다."
+          },
+          quiz: {
+            question: "만약 `name = 'Alice'`로 변수의 값을 변경한 후 위 코드를 실행한다면, 첫 번째 출력되는 문자열은 무엇일까요?",
+            options: ["Welcome to TypePy!", "Welcome to Alice!", "Welcome to {name}!", "에러 발생"],
+            answerIndex: 1,
+            explanation: "f-string(`f\"...\"`)은 문자열 안에 위치한 `{name}` 부분을 실제 변수값인 `'Alice'`로 실시간 치환하여 출력합니다."
+          },
           lineData: [
             {
               text: 'name = "TypePy"',
@@ -601,6 +676,17 @@ print(fruits[0])  # apple</pre>
         },
         {
           code: 'numbers = [1, 2, 3, 4, 5]\ntotal = sum(numbers)\naverage = total / len(numbers)',
+          summary: {
+            desc: "리스트 자료형 선언 및 파이썬 내장함수(sum, len)를 이용한 평균 산출법입니다.",
+            why: "독립된 복수의 여러 데이터를 단 하나의 변수 묶음으로 구조화하고, 반복 루프 코딩 없이 수학적인 총합 및 평균 연산을 빠르게 수행하기 위해 씁니다.",
+            when: "시험 성적 평균 산출, 장바구니 품목 금액 총합 연산, 센서 측정 값의 대표 평균 추출 등 다량의 수치 그룹을 정산할 때 응용합니다."
+          },
+          quiz: {
+            question: "만약 `numbers = [10, 20]`으로 데이터를 교체한 후 코드를 돌리면 `average` 변수값은 최종적으로 몇이 될까요?",
+            options: ["10.0", "15.0", "20.0", "30.0"],
+            answerIndex: 1,
+            explanation: "요소의 합 `total = 30`이며 개수 `len(numbers) = 2`이므로, `30 / 2` 계산 결과인 실수형 `15.0`이 반환됩니다."
+          },
           lineData: [
             {
               text: 'numbers = [1, 2, 3, 4, 5]',
@@ -641,6 +727,17 @@ print(fruits[0])  # apple</pre>
       intermediate: [
         {
           code: 'def is_prime(n):\n    if n < 2:\n        return False\n    for i in range(2, int(n ** 0.5) + 1):\n        if n % i == 0:\n            return False\n    return True',
+          summary: {
+            desc: "소수(Prime Number) 유무를 효율적으로 판별하는 수학 알고리즘 함수입니다.",
+            why: "어떤 수 n이 소수인지 확인하기 위해 2부터 n-1까지 무식하게 다 나눠보는 방식 대신, 수론적 대칭성에 근거해 n의 제곱근까지만 나누어 연산 속도를 기하급수적으로 절약하기 위해 씁니다.",
+            when: "알고리즘 문제 해결(소수 리스트 출력), 데이터 암호화(RSA 비대칭 키 생성 과정에서 거대 소수 탐색), 소인수분해 알고리즘 등에서 사용됩니다."
+          },
+          quiz: {
+            question: "만약 `is_prime(1)`을 호출하면 함수는 조건식에 의해 조기에 어떤 값을 반환하며 종료될까요?",
+            options: ["True", "False", "None", "0"],
+            answerIndex: 1,
+            explanation: "`if n < 2:` 가 첫 경계식 조건문으로 존재하므로, n이 1이면 조건이 참이 되어 즉시 `False`를 리턴하고 실행이 중단됩니다."
+          },
           lineData: [
             {
               text: 'def is_prime(n):',
@@ -723,6 +820,17 @@ print(fruits[0])  # apple</pre>
         },
         {
           code: 'squares = {x: x**2 for x in range(1, 6)}\neven_squares = [v for v in squares.values() if v % 2 == 0]',
+          summary: {
+            desc: "딕셔너리 컴프리헨션(Comprehension)을 이용한 데이터 매핑 및 리스트 필터링 기술입니다.",
+            why: "여러 줄에 달하는 수치 저장 딕셔너리 선언 및 필터 누적 코딩(for 루프, append 연산)을 간결한 단 한 줄로 응축시켜 가독성과 메모리 성능을 모두 잡기 위해 씁니다.",
+            when: "원천 원자 데이터에서 제곱수나 특수 매핑 관계를 신속히 정의하고, 이 중 짝수나 특정 조건을 만족하는 실원소들만 추출하여 재가공할 때 애용합니다."
+          },
+          quiz: {
+            question: "`squares = {x: x**2 for x in range(1, 6)}`를 실행한 후 squares 딕셔너리 내에서 키(Key)가 `3`인 것의 값(Value)은 무엇일까요?",
+            options: ["3", "6", "9", "27"],
+            answerIndex: 2,
+            explanation: "수식이 `x: x**2` 구조이며 x가 1부터 5까지 순회하므로, 3의 제곱인 `9`가 매핑 값으로 보존됩니다."
+          },
           lineData: [
             {
               text: 'squares = {x: x**2 for x in range(1, 6)}',
@@ -752,6 +860,17 @@ print(fruits[0])  # apple</pre>
       advanced: [
         {
           code: 'def debug(func):\n    def wrapper(*args, **kwargs):\n        print(f"Calling {func.__name__}")\n        return func(*args, **kwargs)\n    return wrapper',
+          summary: {
+            desc: "클로저(Closure) 함수를 동적으로 운용하여 대상 함수의 전후 처리를 책임지는 데코레이터(Decorator)입니다.",
+            why: "비즈니스 대상 함수의 본체 로직 코드를 조금도 훼손하지 않으면서, 실행 전 로그 출력이나 수행 시간 검수 등의 공통 관심사(Cross-cutting concerns)를 부가 장식(Decorating)하여 모듈화하기 위해 씁니다.",
+            when: "웹 서비스 라우팅 정보 등록, API 접근 호출 권한 인가 체크, 특정 무거운 계산 로직의 실행 타임 벤치마킹 분석 등에 광범위하게 쓰입니다."
+          },
+          quiz: {
+            question: "데코레이터 및 래핑 과정에서 가변 위치 인수 `*args`와 가변 키워드 인수 `**kwargs`가 수용하는 인자들의 자료형 타입은 각각 무엇일까요?",
+            options: ["리스트 & 세트", "튜플 & 딕셔너리", "문자열 & 정수", "함수 & 클래스"],
+            answerIndex: 1,
+            explanation: "`*args`는 복수의 무명 인수를 하나로 팩킹해 튜플(Tuple)로 받고, `**kwargs`는 네임드 매칭 키워드 인수들을 딕셔너리(Dictionary)로 팩킹합니다."
+          },
           lineData: [
             {
               text: 'def debug(func):',
@@ -812,6 +931,17 @@ print(fruits[0])  # apple</pre>
         },
         {
           code: 'def fibonacci(limit):\n    a, b = 0, 1\n    while a < limit:\n        yield a\n        a, b = b, a + b',
+          summary: {
+            desc: "yield 키워드를 이용해 피보나치 수열을 공급하는 이터레이터 지연 평가 제너레이터입니다.",
+            why: "대량 혹은 무한에 달하는 시퀀스 값을 생성할 때, 모든 값을 미리 메모리 리스트에 적재하여 메모리가 포화되어 다운되는 참사를 방지하고, 호출 시에만 다음 수치 1개씩을 즉시 동시 계산하게 제어하기 위해 씁니다.",
+            when: "초대형 로그 파일 라인별 로딩 스트리밍 처리, 메모리 자원이 제한적인 임베디드 코딩, 점진적인 수학 난수 수열 루프 검출 등에서 필수로 선언합니다."
+          },
+          quiz: {
+            question: "제너레이터 함수를 실행해 반환값을 차례로 얻게 하는 핵심 원리인 `yield`가 `return`과 차별화되는 구조적 차이점은 무엇일까요?",
+            options: ["에러가 나면 함수를 초기화한다.", "값을 전달하고 함수 상태를 메모리에 고정한 채 일시 대기한다.", "값을 무조건 0으로 치환 리턴한다.", "원본 메모리 변수를 모두 삭제한다."],
+            answerIndex: 1,
+            explanation: "`yield`가 발동되면 값은 이송되고 함수의 호출 스택 프레임은 메모리에 저장 유지되며, 재호출(next) 시 일시 정지된 yield 다음 줄부터 다시 실행됩니다."
+          },
           lineData: [
             {
               text: 'def fibonacci(limit):',
@@ -1632,7 +1762,112 @@ print(fruits[0])  # apple</pre>
       document.getElementById('modal-accuracy').innerText = `${acc.toFixed(1)}%`;
       document.getElementById('modal-combo').innerText = `${maxCombo} 회`;
       
+      // Extract active snippet database information
+      const activeSnippet = snippets[currentDifficulty][snippetIndex];
+      
+      // 1. Populate Learning Summary (코드 설명법, 왜 쓰는지, 언제 쓰는지)
+      if (activeSnippet && activeSnippet.summary) {
+        document.getElementById('modal-learn-desc').innerText = activeSnippet.summary.desc || "";
+        document.getElementById('modal-learn-why').innerText = activeSnippet.summary.why || "";
+        document.getElementById('modal-learn-when').innerText = activeSnippet.summary.when || "";
+      }
+      
+      // 2. Populate and Setup Interactive Quiz (응용법훈련 인터페이스)
+      if (activeSnippet && activeSnippet.quiz) {
+        document.getElementById('modal-quiz-question').innerText = activeSnippet.quiz.question;
+        
+        const optionsContainer = document.getElementById('modal-quiz-options');
+        optionsContainer.innerHTML = '';
+        
+        const feedbackContainer = document.getElementById('modal-quiz-feedback');
+        feedbackContainer.className = 'hidden rounded-xl p-3 text-xs leading-relaxed transition-all duration-200';
+        feedbackContainer.innerHTML = ''; // Clear previous HTML content
+        
+        activeSnippet.quiz.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'w-full text-left border border-slate-800 bg-slate-900/60 hover:bg-slate-850 hover:border-slate-700 text-slate-300 hover:text-white rounded-xl p-3 flex items-start gap-2.5 transition-all duration-150 cursor-pointer';
+          
+          const badge = document.createElement('span');
+          badge.className = 'flex items-center justify-center w-5 h-5 rounded-full bg-slate-800 text-[10px] text-slate-400 font-bold border border-slate-750 flex-shrink-0';
+          badge.innerText = String.fromCharCode(65 + idx); // A, B, C, D
+          
+          const txt = document.createElement('span');
+          txt.className = 'break-all pt-0.5';
+          txt.innerText = opt;
+          
+          btn.appendChild(badge);
+          btn.appendChild(txt);
+          
+          btn.addEventListener('click', () => {
+            selectQuizOption(idx, activeSnippet.quiz, btn, optionsContainer);
+          });
+          
+          optionsContainer.appendChild(btn);
+        });
+      }
+      
       document.getElementById('completion-modal').classList.remove('hidden');
+    }
+
+    // Handle Quiz Option Selection (응용법훈련 인터페이스 동작 로직)
+    function selectQuizOption(selectedIndex, quiz, selectedBtn, optionsContainer) {
+      const buttons = optionsContainer.querySelectorAll('button');
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add('opacity-60', 'cursor-not-allowed');
+        btn.classList.remove('hover:bg-slate-850', 'hover:border-slate-700', 'hover:text-white');
+      });
+      
+      selectedBtn.classList.remove('opacity-60');
+      
+      const feedbackContainer = document.getElementById('modal-quiz-feedback');
+      const isCorrect = selectedIndex === quiz.answerIndex;
+      
+      if (isCorrect) {
+        selectedBtn.className = 'w-full text-left border-2 border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold rounded-xl p-3 flex items-start gap-2.5 transition-all duration-150';
+        const badge = selectedBtn.querySelector('span');
+        if (badge) {
+          badge.className = 'flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500 text-[10px] text-slate-950 font-bold flex-shrink-0';
+        }
+        
+        feedbackContainer.className = 'block bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-xl p-4 text-xs leading-relaxed transition-all duration-200 mt-3';
+        feedbackContainer.innerHTML = `
+          <div class="font-bold flex items-center gap-1.5 mb-1 text-emerald-400">
+            <i data-lucide="check-circle" class="w-4 h-4 flex-shrink-0"></i>
+            <span>정답입니다! 🌟</span>
+          </div>
+          <p class="text-slate-300 font-normal leading-relaxed mt-1">${quiz.explanation}</p>
+        `;
+      } else {
+        selectedBtn.className = 'w-full text-left border-2 border-rose-500 bg-rose-500/10 text-rose-400 font-bold rounded-xl p-3 flex items-start gap-2.5 transition-all duration-150';
+        const badge = selectedBtn.querySelector('span');
+        if (badge) {
+          badge.className = 'flex items-center justify-center w-5 h-5 rounded-full bg-rose-500 text-[10px] text-white font-bold flex-shrink-0';
+        }
+        
+        // Subelement correct answer highlight
+        buttons.forEach((btn, idx) => {
+          if (idx === quiz.answerIndex) {
+            btn.classList.remove('opacity-60');
+            btn.className = 'w-full text-left border border-emerald-500/60 bg-emerald-500/5 text-emerald-400 font-semibold rounded-xl p-3 flex items-start gap-2.5 transition-all duration-150';
+            const correctBadge = btn.querySelector('span');
+            if (correctBadge) {
+              correctBadge.className = 'flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/20 text-[10px] text-emerald-400 font-bold border border-emerald-500/40 flex-shrink-0';
+            }
+          }
+        });
+        
+        feedbackContainer.className = 'block bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-xl p-4 text-xs leading-relaxed transition-all duration-200 mt-3';
+        feedbackContainer.innerHTML = `
+          <div class="font-bold flex items-center gap-1.5 mb-1 text-rose-400">
+            <i data-lucide="x-circle" class="w-4 h-4 flex-shrink-0"></i>
+            <span>오답입니다. 다시 한번 확인해보세요! 💡</span>
+          </div>
+          <p class="text-slate-350 font-normal leading-relaxed mt-1">${quiz.explanation}</p>
+        `;
+      }
+      
+      lucide.createIcons();
     }
 
     // Restart Session handler
