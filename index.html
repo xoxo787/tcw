@@ -352,12 +352,16 @@
     <section class="bg-themeCard border border-themeBorder rounded-2xl p-5 shadow-lg relative mb-6 shrink-0 select-none">
       
       <!-- SVG hands outline layer -->
-      <div class="absolute inset-x-0 bottom-0 pointer-events-none flex justify-center items-end opacity-[0.14] z-10 select-none">
-        <svg class="w-[85%] h-44 text-slate-400" viewBox="0 0 800 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <div class="absolute inset-x-0 bottom-0 pointer-events-none flex justify-center items-end opacity-[0.25] z-10 select-none">
+        <svg class="w-[85%] h-48 text-slate-400" viewBox="0 0 800 220" fill="none" xmlns="http://www.w3.org/2000/svg">
           <!-- Left Hand -->
-          <path d="M 160,200 C 170,180 175,150 185,130 C 190,120 195,80 200,65 C 202,60 205,60 208,65 C 212,75 218,115 220,130 C 220,110 225,70 230,50 C 232,45 236,45 238,50 C 242,65 248,110 250,130 C 250,100 258,60 262,40 C 264,35 268,35 270,40 C 275,55 280,105 282,125 C 282,100 288,65 292,50 C 294,45 298,45 300,50 C 305,65 310,100 310,125 C 310,135 325,130 335,140 C 345,150 355,170 360,200" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <g id="left-hand" class="transition-all duration-100 ease-out origin-bottom-left">
+            <path d="M 180,220 C 180,180 175,140 160,120 C 155,110 155,70 162,70 C 169,70 170,110 175,120 C 172,105 172,50 180,50 C 188,50 188,105 192,115 C 190,95 192,30 201,30 C 210,30 208,95 212,110 C 210,95 215,40 224,40 C 233,40 228,100 235,120 C 240,135 250,145 260,155 C 272,160 290,170 298,180 C 304,190 290,200 275,190 C 255,175 245,195 240,220" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.08"/>
+          </g>
           <!-- Right Hand -->
-          <path d="M 640,200 C 630,180 625,150 615,130 C 610,120 605,80 600,65 C 598,60 595,60 592,65 C 588,75 582,115 580,130 C 580,110 575,70 570,50 C 568,45 564,45 562,50 C 558,65 552,110 550,130 C 550,100 542,60 538,40 C 536,35 532,35 530,40 C 525,55 520,105 518,125 C 518,100 512,65 508,50 C 506,45 502,45 500,50 C 495,65 490,100 490,125 C 490,135 475,130 465,140 C 455,150 445,170 440,200" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <g id="right-hand" class="transition-all duration-100 ease-out origin-bottom-right">
+            <path d="M 620,220 C 620,180 625,140 640,120 C 645,110 645,70 638,70 C 631,70 630,110 625,120 C 628,105 628,50 620,50 C 612,50 612,105 608,115 C 610,95 608,30 599,30 C 590,30 592,95 588,110 C 590,95 585,40 576,40 C 567,40 572,100 565,120 C 560,135 550,145 540,155 C 528,160 510,170 502,180 C 496,190 510,200 525,190 C 545,175 555,195 560,220" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.08"/>
+          </g>
         </svg>
       </div>
 
@@ -492,16 +496,16 @@
           <p id="modal-time" class="text-base font-bold text-white">01:23</p>
         </div>
         <div class="space-y-1">
-          <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">평균 WPM</span>
-          <p id="modal-wpm" class="text-base font-bold text-emerald-400">86 WPM</p>
+          <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">평균 타수</span>
+          <p id="modal-cpm" class="text-base font-bold text-emerald-400">430 타</p>
         </div>
         <div class="space-y-1 pt-2 border-t border-slate-800">
           <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">최종 정확도</span>
           <p id="modal-accuracy" class="text-base font-bold text-white">98.6%</p>
         </div>
         <div class="space-y-1 pt-2 border-t border-slate-800">
-          <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">평균 타수(CPM)</span>
-          <p id="modal-cpm" class="text-base font-bold text-white">430 타</p>
+          <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">최대 콤보</span>
+          <p id="modal-combo" class="text-base font-bold text-white">24 회</p>
         </div>
       </div>
 
@@ -1374,6 +1378,54 @@
           keycap.classList.remove('bg-slate-700', 'border-slate-500', 'scale-[0.96]');
         }, 120);
       }
+      
+      // Trigger hand motion animation
+      animateHandMotion(e.key, code);
+    }
+
+    // Trigger typing hand movement animation based on typed key
+    function animateHandMotion(key, code) {
+      const leftCodes = [
+        'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT',
+        'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyG',
+        'KeyZ', 'KeyX', 'KeyC', 'KeyV', 'KeyB',
+        'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5',
+        'Tab', 'CapsLock', 'ShiftLeft', 'ControlLeft', 'AltLeft', 'Backquote'
+      ];
+      
+      const isLeft = leftCodes.includes(code);
+      
+      if (code === 'Space') {
+        const leftEl = document.getElementById('left-hand');
+        const rightEl = document.getElementById('right-hand');
+        if (leftEl && rightEl) {
+          leftEl.style.transform = 'translate(6px, -4px) scale(0.98)';
+          rightEl.style.transform = 'translate(-6px, -4px) scale(0.98)';
+          setTimeout(() => {
+            leftEl.style.transform = 'none';
+            rightEl.style.transform = 'none';
+          }, 100);
+        }
+        return;
+      }
+      
+      if (isLeft) {
+        const handEl = document.getElementById('left-hand');
+        if (handEl) {
+          handEl.style.transform = 'translate(4px, -6px) scale(1.02) rotate(-1deg)';
+          setTimeout(() => {
+            handEl.style.transform = 'none';
+          }, 100);
+        }
+      } else {
+        const handEl = document.getElementById('right-hand');
+        if (handEl) {
+          handEl.style.transform = 'translate(-4px, -6px) scale(1.02) rotate(1deg)';
+          setTimeout(() => {
+            handEl.style.transform = 'none';
+          }, 100);
+        }
+      }
     }
 
     // Complete Session Modal show
@@ -1388,9 +1440,9 @@
       
       // Populate Modal values
       document.getElementById('modal-time').innerText = formatTime(finalSec);
-      document.getElementById('modal-wpm').innerText = `${wpm} WPM`;
-      document.getElementById('modal-accuracy').innerText = `${acc.toFixed(1)}%`;
       document.getElementById('modal-cpm').innerText = `${cpm} 타`;
+      document.getElementById('modal-accuracy').innerText = `${acc.toFixed(1)}%`;
+      document.getElementById('modal-combo').innerText = `${maxCombo} 회`;
       
       document.getElementById('completion-modal').classList.remove('hidden');
     }
